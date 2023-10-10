@@ -51,11 +51,12 @@ func (p *Path) StrokeFill(c *context) *Path {
 }
 
 // calculateLenght calculates total length of path
-func (p *Path) calculateLength() {
+func (p *Path) calculateLength() *Path {
 	p.length = 0.0
 	for i := 0; i < len(p.points)-1; i++ {
 		p.length += p.points[i].Distance(p.points[i+1])
 	}
+	return p
 }
 
 // Open opens Path
@@ -86,13 +87,16 @@ func (p *Path) Perpendicular(t float64, length float64) (p1 Point, p2 Point) {
 
 // GetCentroid Calculates and returns the path's centroid point
 func (p *Path) GetCentroid() Point {
+	state := p.IsClosed()
 	p.Open()
 	total := float64(len(p.points))
 	centroidPoint := Point{0, 0}
 	for _, pt := range p.points {
 		centroidPoint = centroidPoint.Add(pt)
 	}
-	p.Close()
+	if state {
+		p.Close()
+	}
 	return centroidPoint.Div(total)
 }
 
@@ -110,8 +114,6 @@ func (p *Path) PointAngleAt(t float64) (Point, float64) {
 		segmentLength := math.Hypot(end.X-p.points[i].X, end.Y-start.Y)
 		if traveledDist+segmentLength >= targetLength {
 			fracSeg := (targetLength - traveledDist) / segmentLength
-			// pointX := start.X + (end.X-start.X)*fracSeg
-			// pointY := start.Y + (end.Y-start.Y)*fracSeg
 			pt := start.Add(end.Sub(start).Mul(Point{fracSeg, fracSeg}))
 			return pt, math.Atan2(end.Y-start.Y, end.X-start.X)
 		}
