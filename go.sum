@@ -1,0 +1,8 @@
+github.com/cia-rana/goapng v0.0.0-20190514125255-a6f0eaa24e77 h1:EJfccyd0ToYz8dJMszjDd5sg9FYaQMOLY6TrDM/eioU=
+github.com/cia-rana/goapng v0.0.0-20190514125255-a6f0eaa24e77/go.mod h1:p0pkqadiI/0Hh+lkWI1OFdpVJ6liL+Iv5HMquFXHNig=
+github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef h1:Ch6Q+AZUxDBCVqdkI8FSpFyZDtCVBc2VmejdNrm5rRQ=
+github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef/go.mod h1:nXTWP6+gD5+LUJ8krVhhoeHjvHTutPxMYl5SvkcnJNE=
+github.com/srwiley/scanFT v0.0.0-20220128184157-0d1ee492111f h1:uLR2GaV0kWYZ3Ns3l3sjtiN+mOWAQadvrL8HXcyKjl0=
+github.com/srwiley/scanFT v0.0.0-20220128184157-0d1ee492111f/go.mod h1:LZwgIPG9X6nH6j5Ef+xMFspl6Hru4b5EJxzMfeqHYJY=
+golang.org/x/image v0.13.0 h1:3cge/F/QTkNLauhf2QoE9zp+7sr+ZcL4HnoZmdwg9sg=
+golang.org/x/image v0.13.0/go.mod h1:6mmbMOeV28HuMTgA6OSRkdXKYw/t5W9Uwn2Yv1r3Yxk=
