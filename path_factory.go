@@ -11,25 +11,31 @@ func NewPath(points []Point) *Path {
 		Style:  DefaultStyle(),
 	}
 	newPath.SetAnchor(newPath.GetCentroid())
-	newPath.calculateLength()
 	return newPath
 }
 
 // BBox returns a bounding box path with min and max points.
 func BBox(min, max Point) *Path {
 	points := []Point{min, {max.X, min.Y}, max, {min.X, max.Y}, min}
-	return NewPath(points)
+	return NewPath(points).calculateLength()
 }
 
 // Line returns a line Path.
 func Line(start, end Point) *Path {
-	return NewPath([]Point{start, end})
+	return NewPath([]Point{start, end}).calculateLength()
+}
+
+// CubicBezier returns a line Path.
+func CubicBezier(x0, y0, x1, y1, x2, y2, x3, y3 float64) *Path {
+	cb := cubicBezier{[4]Point{{x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}}}
+	p := NewPath(cb.flatten(40)).calculateLength()
+	return p
 }
 
 // Square returns a square Path with side s.
 func Square(topLeft Point, s float64) *Path {
 	Sq := NewPath([]Point{{}, {s, 0}, {s, s}, {0, s}})
-	Sq.Close().Translate(topLeft.X, topLeft.Y)
+	Sq.Close().Translate(topLeft.X, topLeft.Y).calculateLength()
 	return Sq
 }
 
@@ -60,5 +66,6 @@ func ellipseSamples(origin Point, xRadius, yRadius float64, samples int) *Path {
 		pt := Point{xRadius * math.Cos(angle), yRadius * math.Sin(angle)}
 		points = append(points, pt.Add(origin))
 	}
-	return NewPath(points).Close()
+
+	return NewPath(points).Close().calculateLength()
 }
