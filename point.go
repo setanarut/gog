@@ -6,6 +6,11 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
+// P shorthand for Point{} struct
+func P(x, y float64) Point {
+	return Point{X: x, Y: y}
+}
+
 // A Point is an X, Y coordinate pair. The axes increase right and down.
 type Point struct {
 	X, Y float64

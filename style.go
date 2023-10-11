@@ -37,7 +37,7 @@ type Style struct {
 func DefaultStyle() Style {
 	return Style{
 		Fill:      Gray,
-		Stroke:    color.White,
+		Stroke:    White,
 		LineWidth: 1.5,
 		Cap:       ButtCap,
 		Join:      MiterJoin,

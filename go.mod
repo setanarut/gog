@@ -1,6 +1,6 @@
 module github/setanarut/gog
 
-go 1.21.1
+go 1.21.3
 
 require (
 	github.com/cia-rana/goapng v0.0.0-20190514125255-a6f0eaa24e77

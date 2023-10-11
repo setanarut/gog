@@ -24,6 +24,12 @@ func (p Path) Len() int {
 	return len(p.points)
 }
 
+// ResetAnchor sets anchor point to centroid
+func (p *Path) ResetAnchor() *Path {
+	p.Anchor = p.Centroid()
+	return p
+}
+
 // Fill fills the path and draws it on the canvas.
 func (p *Path) Fill(c *context) *Path {
 	c.Fill(p)
@@ -85,8 +91,8 @@ func (p *Path) Perpendicular(t float64, length float64) (p1 Point, p2 Point) {
 	return p1, p2
 }
 
-// GetCentroid Calculates and returns the path's centroid point
-func (p *Path) GetCentroid() Point {
+// Centroid Calculates and returns the path's centroid point
+func (p *Path) Centroid() Point {
 	state := p.IsClosed()
 	p.Open()
 	total := float64(len(p.points))
@@ -101,8 +107,9 @@ func (p *Path) GetCentroid() Point {
 }
 
 // SetAnchor Sets Path's anchor point
-func (p *Path) SetAnchor(pt Point) {
+func (p *Path) SetAnchor(pt Point) *Path {
 	p.Anchor = pt
+	return p
 }
 
 // PointAngleAt Returns point and tangent angle at length

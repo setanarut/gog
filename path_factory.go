@@ -10,7 +10,7 @@ func NewPath(points []Point) *Path {
 		points: points,
 		Style:  DefaultStyle(),
 	}
-	newPath.SetAnchor(newPath.GetCentroid())
+	newPath.SetAnchor(newPath.Centroid())
 	return newPath
 }
 

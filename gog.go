@@ -2,7 +2,6 @@
 package gog
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -125,29 +124,44 @@ func (canv *context) SaveAPNG(filePath string, delay int) {
 	writeAnimatedPNG(filePath, canv.animationFrames, uint16(delay))
 }
 
-// Debug
-func (c *context) Debug(p *Path) {
-	dot := Circle(p.Start(), 5)
-	dot.SetFill(colornames.Green)
+// DebugDraw
+func (c *context) DebugDraw(p *Path) {
+	// BBOX
+	BBox(p.Bounds()).SetStroke(colornames.Magenta).Stroke(c)
+	// END
+	dot := Circle(p.Start(), 2)
+	dot.SetFill(colornames.Yellow)
 	dot.SetPos(p.End())
 	c.Fill(dot)
-
-	dot.SetFill(colornames.Green)
+	// START
+	dot.SetFill(colornames.Yellow)
 	dot.SetPos(p.Start())
 	c.Fill(dot)
-
-	dot.SetPos(p.points[1]).SetFill(colornames.Dodgerblue)
+	// SECOND POINT
+	dot.SetPos(p.points[1]).SetFill(colornames.Orangered)
 	c.Fill(dot)
-	dot.SetFill(colornames.Darkslategray)
-
+	// POINTS
+	dot.SetFill(colornames.White)
 	for i := 2; i < p.Len()-1; i++ {
 		dot.SetPos(p.points[i])
 		c.Fill(dot)
 	}
+	// STROKE PATH
+	st := p.Style.Stroke
+	p.SetStroke(Gray)
 	p.Stroke(c)
-	fmt.Println("Path Length:", p.length)
-	fmt.Println("Total Points:", p.Len())
-	fmt.Println("Closed:", p.IsClosed())
-	fmt.Printf("%+v\n", p.Style)
+	p.SetStroke(st)
+
+	// centroid
+	dot.SetLineWidth(2)
+	dot.SetStroke(colornames.Cyan)
+	dot.SetPos(p.Centroid()).Scale(Point{2, 2})
+	c.Stroke(dot)
+
+	// // INFO
+	// fmt.Println("Path Length:", p.length)
+	// fmt.Println("Total Points:", p.Len())
+	// fmt.Println("Closed:", p.IsClosed())
+	// fmt.Printf("%+v\n", p.Style)
 
 }
