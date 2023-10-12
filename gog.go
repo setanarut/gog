@@ -34,7 +34,7 @@ type context struct {
 	scannerFreeType *scanFT.ScannerFT
 	filler          *rasterx.Filler
 	stroker         *rasterx.Stroker
-	animationFrames []image.Image
+	AnimationFrames []image.Image
 	// Center point of Canvas
 	Center Point
 }
@@ -108,7 +108,7 @@ func (canv *context) Clear(c color.Color) *context {
 
 // AppendAnimationFrame appends current canvas to animation frames.
 func (canv *context) AppendAnimationFrame() {
-	canv.animationFrames = append(canv.animationFrames, cloneRGBAImage(canv.surface))
+	canv.AnimationFrames = append(canv.AnimationFrames, cloneRGBAImage(canv.surface))
 }
 
 // SavePNG saves current canvas as static image
@@ -118,13 +118,13 @@ func (canv *context) SavePNG(filePath string) {
 
 // SaveAPNG Saves APNG animation addes with AppendAnimationFrame().
 func (canv *context) SaveAPNG(filePath string, delay int) {
-	if len(canv.animationFrames) == 0 {
+	if len(canv.AnimationFrames) == 0 {
 		panic("There is no frame in the image sequence, add at least one frame with AppendAnimationFrame().")
 	}
-	writeAnimatedPNG(filePath, canv.animationFrames, uint16(delay))
+	writeAnimatedPNG(filePath, canv.AnimationFrames, uint16(delay))
 }
 
-// DebugDraw
+// DebugDraw draws Path attributes for debug
 func (c *context) DebugDraw(p *Path) {
 	// BBOX
 	BBox(p.Bounds()).SetStroke(colornames.Magenta).Stroke(c)

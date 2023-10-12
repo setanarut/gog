@@ -29,10 +29,10 @@ func Line(start, end Point) *Path {
 	return NewPath([]Point{start, end}).calculateLength()
 }
 
-// CubicBezier returns a line Path.
+// CubicBezier returns a cubic-bezier Path.
 func CubicBezier(x0, y0, x1, y1, x2, y2, x3, y3 float64) *Path {
 	cb := cubicBezier{[4]Point{{x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}}}
-	p := NewPath(cb.flatten(40)).calculateLength()
+	p := NewPath(cb.flatten(50)).calculateLength()
 	return p
 }
 
