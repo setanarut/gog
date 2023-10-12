@@ -11,6 +11,11 @@ import (
 	"github.com/cia-rana/goapng"
 )
 
+// TangentAngle return tangent angle of two points
+func TangentAngle(start, end Point) float64 {
+	return math.Atan2(end.Y-start.Y, end.X-start.X)
+}
+
 func clip(number, min, max float64) float64 {
 	if number < min {
 		number = min
@@ -32,17 +37,17 @@ func pointOnCircle(center Point, radius float64, angle float64) Point {
 	return Point{x, y}
 }
 
-// // deepCopyPath returns copy of this Path
-// func deepCopyPath(p *Path) *Path {
-// 	newPath := new(Path)
-// 	newCoords := make([]Point, len(p.points))
-// 	copy(newCoords, p.points)
-// 	newPath.points = newCoords
-// 	newPath.Style = p.Style
-// 	newPath.Anchor = p.Anchor
-// 	newPath.length = p.length
-// 	return newPath
-// }
+// deepCopyPath returns copy of path
+func deepCopyPath(p *Path) *Path {
+	newPath := new(Path)
+	newCoords := make([]Point, len(p.points))
+	copy(newCoords, p.points)
+	newPath.points = newCoords
+	newPath.Style = p.Style
+	newPath.Anchor = p.Anchor
+	newPath.length = p.length
+	return newPath
+}
 
 // Radians converts degrees to radians
 func Radians(degree float64) float64 {

@@ -19,6 +19,39 @@ type Path struct {
 	length float64
 }
 
+// DebugDraw draw for debug
+func (p *Path) DebugDraw(c *context) *Path {
+	c.DebugDraw(p)
+	return p
+}
+
+// Extend appends point to the end of the Path
+func (p *Path) Extend(pnt Point) *Path {
+	p.points = append(p.points, pnt)
+	return p
+}
+
+// RemoveEndPoint removes end point of the Path if the number of points is more than two.
+func (p *Path) RemoveEndPoint() *Path {
+	if len(p.points) > 2 {
+		p.points = p.points[:len(p.points)-1]
+	}
+	return p
+}
+
+// RemovePointAt removes point from Path at index if the number of points is more than two.
+func (p *Path) RemovePointAt(index int) *Path {
+	if len(p.points) > 2 {
+		p.points = slices.Delete(p.points, index, index+1)
+	}
+	return p
+}
+
+// Clone returns copy of path
+func (p *Path) Clone() *Path {
+	return deepCopyPath(p)
+}
+
 // Len returns number of points
 func (p Path) Len() int {
 	return len(p.points)
@@ -114,6 +147,7 @@ func (p *Path) SetAnchor(pt Point) *Path {
 
 // PointAngleAt Returns point and tangent angle at length
 func (p *Path) PointAngleAt(t float64) (Point, float64) {
+	t = clip(t, 0, 1)
 	targetLength := t * p.length
 	traveledDist := 0.0
 	for i := 0; i < len(p.points)-1; i++ {
@@ -122,7 +156,8 @@ func (p *Path) PointAngleAt(t float64) (Point, float64) {
 		if traveledDist+segmentLength >= targetLength {
 			fracSeg := (targetLength - traveledDist) / segmentLength
 			pt := start.Add(end.Sub(start).Mul(Point{fracSeg, fracSeg}))
-			return pt, math.Atan2(end.Y-start.Y, end.X-start.X)
+
+			return pt, TangentAngle(start, end)
 		}
 		traveledDist += segmentLength
 	}
@@ -166,12 +201,18 @@ func (p *Path) Bounds() (Point, Point) {
 
 // Start returns start point of Path
 func (p *Path) Start() Point {
-	return p.points[0]
+	if len(p.points) > 0 {
+		return p.points[0]
+	}
+	return Point{0, 0}
 }
 
 // End returns end point of Path
 func (p *Path) End() Point {
-	return p.points[len(p.points)-1]
+	if len(p.points) > 0 {
+		return p.points[len(p.points)-1]
+	}
+	return Point{0, 0}
 }
 
 // SetStyle sets Style of Path.
