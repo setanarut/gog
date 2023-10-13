@@ -158,6 +158,12 @@ func (c *context) DebugDraw(p *Path) {
 	dot.SetPos(p.Centroid()).Scale(Point{2, 2})
 	c.Stroke(dot)
 
+	// BBox Center
+	dot.SetStroke(colornames.Orange)
+	a, b := p.Bounds()
+	dot.SetPos(a.Lerp(b, 0.5))
+	c.Stroke(dot)
+
 	// // INFO
 	// fmt.Println("Path Length:", p.length)
 	// fmt.Println("Total Points:", p.Len())
