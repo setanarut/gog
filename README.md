@@ -9,7 +9,7 @@ Instead of instant drawing mode, each shape is a `Path` object made up of points
 package main
 
 import (
-	"github/setanarut/gog"
+	"github.com/setanarut/gog"
 	"image/color"
 )
 
