@@ -31,6 +31,12 @@ func (p *Path) Extend(pnt Point) *Path {
 	return p
 }
 
+// Insert inserts point to the Path at index
+func (p *Path) Insert(pnt Point, index int) *Path {
+	p.points = slices.Insert(p.points, index, pnt)
+	return p
+}
+
 // RemoveEndPoint removes end point of the Path if the number of points is more than two.
 func (p *Path) RemoveEndPoint() *Path {
 	if len(p.points) > 2 {

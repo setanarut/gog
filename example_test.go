@@ -32,11 +32,22 @@ func ExampleLine() {
 	// {0 0} {25 80}
 }
 
-// Creates new line and prints point and angle at time
-func ExampleLine_pointAngleAt() {
-	line := gog.Line(gog.Point{0, 0}, gog.Point{25, 80})
-	p, a := line.PointAngleAt(0.5)
-	fmt.Println(p, a)
+// Get point and tangent angle at time t
+func ExamplePath_PointAngleAt() {
+	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
+	point, angle := line.PointAngleAt(0.5)
+	fmt.Println(point, angle)
+	fmt.Println(line.PointAngleAt(1))
 	// Output:
-	// {12.5 40} 1.2679114584199251
+	// {5 5} 0.7853981633974483
+	// {10 10} 0.7853981633974483
+}
+
+// Insert point to path points at index
+func ExamplePath_Insert() {
+	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
+	line.Insert(gog.Point{66, 66}, 1)
+	line.Print()
+	// Output:
+	// [{0 0} {66 66} {10 10}]
 }
