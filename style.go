@@ -34,6 +34,7 @@ type Style struct {
 	Join JoinMode
 }
 
+// DefaultStyle returns default style
 func DefaultStyle() Style {
 	return Style{
 		Fill:      Gray,

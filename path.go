@@ -9,7 +9,7 @@ import (
 
 // Path object
 type Path struct {
-	// points holds x, y, x, y... coordinates of Path
+	// points holds coordinates of Path
 	points []Point
 	// Style holds the fill color, line color, thickness and DrawMode options.
 	Style Style
@@ -145,7 +145,7 @@ func (p *Path) SetAnchor(pt Point) *Path {
 	return p
 }
 
-// PointAngleAt Returns point and tangent angle at length
+// PointAngleAt Returns point and tangent angle at time t
 func (p *Path) PointAngleAt(t float64) (Point, float64) {
 	t = clip(t, 0, 1)
 	targetLength := t * p.length
@@ -173,12 +173,12 @@ func (p *Path) IsClosed() bool {
 	}
 }
 
-// Print path to console
+// Prints path points
 func (p *Path) Print() {
 	fmt.Println(p.points)
 }
 
-// Bounds returns bounds
+// Bounds returns bounds min/max
 func (p *Path) Bounds() (Point, Point) {
 	min := p.Start()
 	max := p.Start()
@@ -239,7 +239,7 @@ func (p *Path) SetLineWidth(w float64) *Path {
 	return p
 }
 
-// SetPosition Aligns the Path with the anchor point to the desired point.
+// SetPos Aligns the Path with the anchor point to the desired point.
 // In other words, it sets the position.
 func (p *Path) SetPos(position Point) *Path {
 	p.Translate(position.X-p.Anchor.X, position.Y-p.Anchor.Y)

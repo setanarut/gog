@@ -4,7 +4,7 @@ type cubicBezier struct {
 	pts [4]Point
 }
 
-// GetPoint returns point at time t
+// getPoint returns point at time t
 func (cb *cubicBezier) getPoint(t float64) Point {
 	x := (1-t)*(1-t)*(1-t)*cb.pts[0].X + 3*(1-t)*(1-t)*t*cb.pts[1].X + 3*(1-t)*t*t*cb.pts[2].X + t*t*t*cb.pts[3].X
 	y := (1-t)*(1-t)*(1-t)*cb.pts[0].Y + 3*(1-t)*(1-t)*t*cb.pts[1].Y + 3*(1-t)*t*t*cb.pts[2].Y + t*t*t*cb.pts[3].Y
