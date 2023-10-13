@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github/setanarut/gog"
 	"image/color"
+
+	"github.com/setanarut/gog"
 )
 
 func main() {

@@ -2,8 +2,9 @@ package gog_test
 
 import (
 	"fmt"
-	"github/setanarut/gog"
 	"image/color"
+
+	"github.com/setanarut/gog"
 )
 
 // 150-frame rotating cubic bezier APNG animation
