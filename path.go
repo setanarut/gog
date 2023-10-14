@@ -28,29 +28,61 @@ func (p *Path) DebugDraw(c *context) *Path {
 // Extend appends point to the end of the Path
 func (p *Path) Extend(pnt Point) *Path {
 	p.points = append(p.points, pnt)
+	p.calculateLength()
 	return p
 }
 
-// Insert inserts point to the Path at index
-func (p *Path) Insert(pnt Point, index int) *Path {
-	p.points = slices.Insert(p.points, index, pnt)
-	return p
-}
-
-// RemoveEndPoint removes end point of the Path if the number of points is more than two.
-func (p *Path) RemoveEndPoint() *Path {
+// DeleteEnd removes end point of the Path if the number of points is more than two.
+func (p *Path) DeleteEnd() *Path {
 	if len(p.points) > 2 {
 		p.points = p.points[:len(p.points)-1]
+		p.calculateLength()
 	}
 	return p
 }
 
-// RemovePointAt removes point from Path at index if the number of points is more than two.
-func (p *Path) RemovePointAt(index int) *Path {
+// DeleteAtIndex removes point from Path at index if the number of points is more than two.
+func (p *Path) DeleteAtIndex(index int) *Path {
 	if len(p.points) > 2 {
 		p.points = slices.Delete(p.points, index, index+1)
+		p.calculateLength()
 	}
 	return p
+}
+
+// InsertAtIndex inserts point to the Path at index
+func (p *Path) InsertAtIndex(pnt Point, index int) *Path {
+	p.points = slices.Insert(p.points, index, pnt)
+	p.calculateLength()
+	return p
+}
+
+// InsertAtLength inserts point at length if coord is empty
+func (p *Path) InsertAtLength(length float64) {
+	length = clip(length, 0, p.length)
+	traveledDist := 0.0
+	for i := 0; i < len(p.points)-1; i++ {
+		start, end := p.points[i], p.points[i+1]
+		segmentLength := start.Distance(end)
+		if traveledDist+segmentLength >= length {
+			fracSeg := (length - traveledDist) / segmentLength
+			pt := start.Add(end.Sub(start).Mul(Point{fracSeg, fracSeg}))
+			if pt.Distance(end) > 0.1 {
+				p.InsertAtIndex(pt, i+1)
+			}
+			p.calculateLength()
+			return
+		}
+		traveledDist += segmentLength
+	}
+}
+
+// InsertAtTime inserts point at time
+func (p *Path) InsertAtTime(t float64) {
+	t = clip(t, 0, 1)
+	length := t * p.length
+	p.InsertAtLength(length)
+
 }
 
 // Clone returns copy of path
@@ -117,13 +149,14 @@ func (p *Path) Open() *Path {
 func (p *Path) Close() *Path {
 	if !p.IsClosed() {
 		p.points = append(p.points, p.points[0])
+		p.calculateLength()
 	}
 	return p
 }
 
 // Returns Perpendicular line points at time t with length
 func (p *Path) Perpendicular(t float64, length float64) (p1 Point, p2 Point) {
-	pos, ang := p.PointAngleAt(t)
+	pos, ang := p.PointAngleAtTime(t)
 	ang += math.Pi * 0.5
 	p1 = pointOnCircle(pos, length/2, ang)
 	p2 = pointOnCircle(pos, length/2, oppositeAngle(ang))
@@ -151,23 +184,28 @@ func (p *Path) SetAnchor(pt Point) *Path {
 	return p
 }
 
-// PointAngleAt Returns point and tangent angle at time t
-func (p *Path) PointAngleAt(t float64) (Point, float64) {
-	t = clip(t, 0, 1)
-	targetLength := t * p.length
+// PointAngleAtLength Returns point and tangent angle at length
+func (p *Path) PointAngleAtLength(length float64) (Point, float64) {
+	length = clip(length, 0, p.length)
 	traveledDist := 0.0
 	for i := 0; i < len(p.points)-1; i++ {
 		start, end := p.points[i], p.points[i+1]
-		segmentLength := math.Hypot(end.X-p.points[i].X, end.Y-start.Y)
-		if traveledDist+segmentLength >= targetLength {
-			fracSeg := (targetLength - traveledDist) / segmentLength
+		segmentLength := start.Distance(end)
+		if traveledDist+segmentLength >= length {
+			fracSeg := (length - traveledDist) / segmentLength
 			pt := start.Add(end.Sub(start).Mul(Point{fracSeg, fracSeg}))
-
 			return pt, TangentAngle(start, end)
 		}
 		traveledDist += segmentLength
 	}
 	return Point{}, 0.0
+}
+
+// PointAngleAtTime Returns point and tangent angle at time t
+func (p *Path) PointAngleAtTime(t float64) (Point, float64) {
+	t = clip(t, 0, 1)
+	length := t * p.length
+	return p.PointAngleAtLength(length)
 }
 
 // IsClosed returns true if Path closed
@@ -179,8 +217,8 @@ func (p *Path) IsClosed() bool {
 	}
 }
 
-// Prints path points
-func (p *Path) Print() {
+// PrintPoints prints path points to standard output.
+func (p *Path) PrintPoints() {
 	fmt.Println(p.points)
 }
 

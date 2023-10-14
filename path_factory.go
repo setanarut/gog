@@ -11,7 +11,7 @@ func NewPath(points []Point) *Path {
 		Style:  DefaultStyle(),
 	}
 
-	if len(points) > 2 {
+	if len(points) > 1 {
 		newPath.SetAnchor(newPath.Centroid())
 	}
 	newPath.calculateLength()

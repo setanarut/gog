@@ -33,21 +33,51 @@ func ExampleLine() {
 }
 
 // Get point and tangent angle at time t
-func ExamplePath_PointAngleAt() {
+func ExamplePath_PointAngleAtTime() {
 	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
-	point, angle := line.PointAngleAt(0.5)
+	point, angle := line.PointAngleAtTime(0.5)
 	fmt.Println(point, angle)
-	fmt.Println(line.PointAngleAt(1))
 	// Output:
 	// {5 5} 0.7853981633974483
-	// {10 10} 0.7853981633974483
+}
+
+// Get point and tangent angle at length
+func ExamplePath_PointAngleAtLength() {
+	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
+	point, angle := line.PointAngleAtLength(line.Length() / 2)
+	fmt.Println(point, angle)
+	// Output:
+	// {5 5} 0.7853981633974483
+}
+
+func ExamplePath_InsertAtLength() {
+	line := gog.NewPath([]gog.Point{{0, 0}, {0, 10}, {0, 20}})
+	line.InsertAtLength(10.5)
+	line.PrintPoints()
+	// Output:
+	// [{0 0} {0 10} {0 10.5} {0 20}]
 }
 
 // Insert point to path points at index
-func ExamplePath_Insert() {
+func ExamplePath_InsertAtIndex() {
 	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
-	line.Insert(gog.Point{66, 66}, 1)
-	line.Print()
+	line.InsertAtIndex(gog.Point{66, 66}, 1)
+	line.PrintPoints()
 	// Output:
 	// [{0 0} {66 66} {10 10}]
+}
+
+func ExamplePath_SetAnchor() {
+	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
+	fmt.Println(line.Anchor) // Centroid of Path
+	line.SetAnchor(gog.Point{3, 3})
+	fmt.Println(line.Anchor)
+	line.ResetAnchor()
+	fmt.Println(line.Anchor)
+	fmt.Println(line.Centroid() == line.Anchor)
+	// Output:
+	// {5 5}
+	// {3 3}
+	// {5 5}
+	// true
 }
