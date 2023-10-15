@@ -1,9 +1,16 @@
 # gog
 
-gog is a Go Object-oriented Graphic drawing library for generative art, GIF/ANPG animations
+[gog](https://pkg.go.dev/github.com/setanarut/gog#section-documentation) is a Go Object-oriented Graphic drawing library for generative art, PNG or ANPG animations
 
-Instead of instant drawing mode, each shape is a `Path` object made up of points. The path has `Fill()` `Stroke()` `FillStroke()` `StrokeFill()` functions for drawing on the canvas. Transformations (`Path.Rotate()`, `Path.Scale()`, `Path.Translate()`) are performed by reference to the `Path.Anchor` point.
+Instead of immediate drawing, each shape is a `Path{}` struct made up of points. The Path has `Fill()` `Stroke()` `FillStroke()` `StrokeFill()` functions for drawing on the canvas. There is also a `DrawDebug()` function for Debug purposes that draws all the properties of the Path.
 
+All transformations are made with reference to the Path.Anchor point.
+
+- `Path.Translate()`
+- `Path.SetPos()`
+- `Path.Rotate()`
+- `Path.Rotated()`
+- `Path.Scale()`
 
 ```Go
 package main
@@ -27,5 +34,22 @@ func main() {
 }
 ```
 
-
 ![curve](./examples/curve_anim/curve_anim.png)
+
+## Motion path example
+
+```go
+rect := gog.Rect(gog.Point{}, 30, 10)
+poly := gog.Circle(c.Center, 50).Scale(gog.P(1, 0.5))
+for _, t := range gog.Linspace(0, 1, 150) {
+	c.Clear(gog.Black)
+	poly.Stroke(c)
+	p, a := poly.PointAngleAtTime(t)
+	rect.SetPos(p).Rotated(a).SetFill(colornames.Yellow).Fill(c)
+	c.AppendAnimationFrame()
+}
+```
+
+[Full code](./examples/point_angle/point_angle.go) is available in example folder
+
+![curve](./examples/point_angle/point_angle.png)

@@ -327,12 +327,17 @@ func (p *Path) Translate(x, y float64) *Path {
 	return p
 }
 
-// Rotate rotates the Path about
+// Rotate rotates the Path about Path.Anchor point
 func (p *Path) Rotate(angle float64) *Path {
 	for i := 0; i < p.Len(); i++ {
 		p.points[i] = p.points[i].Rotate(angle, p.Anchor)
 	}
 	return p
+}
+
+// Rotated returns new rotated Path about Path.Anchor point
+func (p *Path) Rotated(angle float64) *Path {
+	return p.Clone().Rotate(angle)
 }
 
 // Scale scales the Path at the Anchor point.

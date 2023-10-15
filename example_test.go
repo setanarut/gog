@@ -26,7 +26,7 @@ func Example() {
 
 // Creates new line and prints start and end point
 func ExampleLine() {
-	line := gog.Line(gog.Point{0, 0}, gog.Point{25, 80})
+	line := gog.Line(gog.Point{X: 0, Y: 0}, gog.Point{X: 25, Y: 80})
 	fmt.Println(line.Start(), line.End())
 	// Output:
 	// {0 0} {25 80}
@@ -34,7 +34,7 @@ func ExampleLine() {
 
 // Get point and tangent angle at time t
 func ExamplePath_PointAngleAtTime() {
-	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
+	line := gog.NewPath([]gog.Point{{X: 0, Y: 0}, {X: 10, Y: 10}})
 	point, angle := line.PointAngleAtTime(0.5)
 	fmt.Println(point, angle)
 	// Output:
@@ -43,7 +43,7 @@ func ExamplePath_PointAngleAtTime() {
 
 // Get point and tangent angle at length
 func ExamplePath_PointAngleAtLength() {
-	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
+	line := gog.NewPath([]gog.Point{{X: 0, Y: 0}, {X: 10, Y: 10}})
 	point, angle := line.PointAngleAtLength(line.Length() / 2)
 	fmt.Println(point, angle)
 	// Output:
@@ -55,7 +55,7 @@ func ExamplePath_InsertAtLength() {
 	line.InsertAtLength(10.5)
 	line.PrintPoints()
 	// Output:
-	// [{0 0} {0 10} {0 10.5} {0 20}]
+	// [{0 0} {0 10} {0 10.5} {0 20}]s
 }
 
 // Insert point to path points at index
@@ -68,9 +68,9 @@ func ExamplePath_InsertAtIndex() {
 }
 
 func ExamplePath_SetAnchor() {
-	line := gog.NewPath([]gog.Point{{0, 0}, {10, 10}})
+	line := gog.NewPath([]gog.Point{{X: 0, Y: 0}, {X: 10, Y: 10}})
 	fmt.Println(line.Anchor) // Centroid of Path
-	line.SetAnchor(gog.Point{3, 3})
+	line.SetAnchor(gog.Point{X: 3, Y: 3})
 	fmt.Println(line.Anchor)
 	line.ResetAnchor()
 	fmt.Println(line.Anchor)
@@ -99,8 +99,8 @@ func ExampleStyle() {
 		Cap:       gog.CubicCap,
 		Join:      gog.BevelJoin,
 	}
-	square := gog.Square(gog.Point{10, 10}, 50).SetStyle(myStyle)
-	square2 := gog.Square(gog.Point{10, 10}, 50)
+	square := gog.Square(gog.P(10, 10), 50).SetStyle(myStyle)
+	square2 := gog.Square(gog.P(10, 10), 50)
 	square2.Style = myStyle2
 	square2.SetFill(color.RGBA{0, 255, 255, 255})
 	fmt.Printf("%+v\n%+v", square.Style, square2.Style)

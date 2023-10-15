@@ -117,6 +117,8 @@ func (canv *context) SavePNG(filePath string) {
 }
 
 // SaveAPNG Saves APNG animation addes with AppendAnimationFrame().
+//
+// The successive delay times, one per frame, in 100ths of a second. (2 for 50 FPS, 4 for 25 FPS)
 func (canv *context) SaveAPNG(filePath string, delay int) {
 	if len(canv.AnimationFrames) == 0 {
 		panic("There is no frame in the image sequence, add at least one frame with AppendAnimationFrame().")
