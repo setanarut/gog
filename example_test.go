@@ -81,3 +81,13 @@ func ExamplePath_SetAnchor() {
 	// {5 5}
 	// true
 }
+
+func ExamplePath_RemoveDoubles() {
+	path := gog.NewPath([]gog.Point{{0, 0}, {77, 77}, {77, 77}, {0, 0}})
+	path.PrintPoints()
+	path.RemoveDoubles()
+	path.PrintPoints()
+	// Output:
+	// [{0 0} {77 77} {77 77} {0 0}]
+	// [{0 0} {77 77} {0 0}]
+}

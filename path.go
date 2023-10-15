@@ -25,9 +25,9 @@ func (p *Path) DebugDraw(c *context) *Path {
 	return p
 }
 
-// Extend appends point to the end of the Path
-func (p *Path) Extend(pnt Point) *Path {
-	p.points = append(p.points, pnt)
+// AppendPoints appends points to the end of the Path
+func (p *Path) AppendPoints(points ...Point) *Path {
+	p.points = append(p.points, points...)
 	p.calculateLength()
 	return p
 }
@@ -57,6 +57,12 @@ func (p *Path) InsertAtIndex(pnt Point, index int) *Path {
 	return p
 }
 
+// PointAtIndex returns point at index
+func (p *Path) PointAtIndex(index int) Point {
+	pt := p.points[index]
+	return pt
+}
+
 // InsertAtLength inserts point at length if coord is empty
 func (p *Path) InsertAtLength(length float64) {
 	length = clip(length, 0, p.length)
@@ -83,6 +89,25 @@ func (p *Path) InsertAtTime(t float64) {
 	length := t * p.length
 	p.InsertAtLength(length)
 
+}
+
+// RemoveDoubles duplicate points
+func (p *Path) RemoveDoubles() *Path {
+	uniquePoints := make([]Point, 0)
+	seen := make(map[Point]bool)
+	closed := p.IsClosed()
+	p.Open()
+	for _, p := range p.points {
+		if !seen[p] {
+			seen[p] = true
+			uniquePoints = append(uniquePoints, p)
+		}
+	}
+	p.points = uniquePoints
+	if closed {
+		p.Close()
+	}
+	return p
 }
 
 // Clone returns copy of path
@@ -220,6 +245,11 @@ func (p *Path) IsClosed() bool {
 // PrintPoints prints path points to standard output.
 func (p *Path) PrintPoints() {
 	fmt.Println(p.points)
+}
+
+// GetPoints return points
+func (p *Path) GetPoints() []Point {
+	return p.points
 }
 
 // Bounds returns bounds min/max
