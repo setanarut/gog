@@ -91,7 +91,7 @@ func (p *Path) InsertAtTime(t float64) {
 
 }
 
-// RemoveDoubles duplicate points
+// RemoveDoubles removes double points
 func (p *Path) RemoveDoubles() *Path {
 	uniquePoints := make([]Point, 0)
 	seen := make(map[Point]bool)
@@ -190,16 +190,13 @@ func (p *Path) Perpendicular(t float64, length float64) (p1 Point, p2 Point) {
 
 // Centroid Calculates and returns the path's centroid point
 func (p *Path) Centroid() Point {
-	state := p.IsClosed()
-	p.Open()
 	total := float64(len(p.points))
 	centroidPoint := Point{0, 0}
-	for _, pt := range p.points {
+	noDoublePath := p.Clone().RemoveDoubles()
+	for _, pt := range noDoublePath.points {
 		centroidPoint = centroidPoint.Add(pt)
 	}
-	if state {
-		p.Close()
-	}
+	noDoublePath = nil
 	return centroidPoint.Div(total)
 }
 
