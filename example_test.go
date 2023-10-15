@@ -89,3 +89,22 @@ func ExamplePath_RemoveDoubles() {
 	// Output:
 	// [{0 0} {77 77} {0 0}]
 }
+func ExampleStyle() {
+	myStyle := gog.NewStyle(color.RGBA{255, 0, 0, 255},
+		color.Gray{128}, 10, gog.RoundCap, gog.RoundJoin)
+	myStyle2 := gog.Style{
+		Fill:      color.RGBA{255, 255, 0, 255},
+		Stroke:    color.RGBA{255, 0, 255, 255},
+		LineWidth: 7,
+		Cap:       gog.CubicCap,
+		Join:      gog.BevelJoin,
+	}
+	square := gog.Square(gog.Point{10, 10}, 50).SetStyle(myStyle)
+	square2 := gog.Square(gog.Point{10, 10}, 50)
+	square2.Style = myStyle2
+	square2.SetFill(color.RGBA{0, 255, 255, 255})
+	fmt.Printf("%+v\n%+v", square.Style, square2.Style)
+	// Output:
+	// {Fill:{R:255 G:0 B:0 A:255} Stroke:{Y:128} LineWidth:10 Cap:2 Join:1}
+	// {Fill:{R:0 G:255 B:255 A:255} Stroke:{R:255 G:0 B:255 A:255} LineWidth:7 Cap:3 Join:2}
+}

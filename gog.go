@@ -125,7 +125,9 @@ func (canv *context) SaveAPNG(filePath string, delay int) {
 }
 
 // DebugDraw draws Path attributes for debug
-func (c *context) DebugDraw(p *Path) {
+func (c *context) DebugDraw(path *Path) {
+
+	p := path.Clone()
 	// BBOX
 	BBox(p.Bounds()).SetStroke(colornames.Magenta).Stroke(c)
 	// END
@@ -148,6 +150,7 @@ func (c *context) DebugDraw(p *Path) {
 	}
 	// STROKE PATH
 	st := p.Style.Stroke
+	p.SetLineWidth(1)
 	p.SetStroke(Gray)
 	p.Stroke(c)
 	p.SetStroke(st)
@@ -163,11 +166,5 @@ func (c *context) DebugDraw(p *Path) {
 	a, b := p.Bounds()
 	dot.SetPos(a.Lerp(b, 0.5))
 	c.Stroke(dot)
-
-	// // INFO
-	// fmt.Println("Path Length:", p.length)
-	// fmt.Println("Total Points:", p.Len())
-	// fmt.Println("Closed:", p.IsClosed())
-	// fmt.Printf("%+v\n", p.Style)
 
 }

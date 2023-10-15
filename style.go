@@ -9,13 +9,14 @@ var Black = color.Black
 var Gray = color.Gray{128}
 var Gray40 = color.Gray{40}
 
-func NewStyle(fill, stroke color.Color, lineWidth float64) Style {
+// NewStyle shorthand for create Style{}
+func NewStyle(fill, stroke color.Color, lineWidth float64, cap CapMode, join JoinMode) Style {
 	return Style{
 		Fill:      fill,
 		Stroke:    stroke,
 		LineWidth: lineWidth,
-		Cap:       ButtCap,
-		Join:      MiterJoin,
+		Cap:       cap,
+		Join:      join,
 	}
 }
 
@@ -49,13 +50,6 @@ type (
 	JoinMode uint8
 	CapMode  uint8
 	DrawMode uint8
-)
-
-// Drawing style constant
-const (
-	Fill DrawMode = iota
-	Stroke
-	FillStroke
 )
 
 // CapMode constants determines line cap style
