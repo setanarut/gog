@@ -3,7 +3,7 @@
 [gog](https://pkg.go.dev/github.com/setanarut/gog#section-documentation) is a Go Object-oriented 2d drawing library for generative art
 
 
-Instead of immediate drawing, each shape is a `Path{}` struct made up of points. The Path has `Fill()` `Stroke()` `FillStroke()` `StrokeFill()` functions for drawing on the canvas. There is also a `DrawDebug()` function for Debug purposes that draws all the properties of the Path.
+Instead of immediate drawing, each shape is a `Path{}` struct made up of points. The Path has `Fill()` `Stroke()` `FillStroke()` `StrokeFill()` functions for drawing on the canvas. There is also a `DebugDraw()` function for Debug purposes that draws all the properties of the Path.
 
 All transformations are made with reference to the Path.Anchor point.
 
