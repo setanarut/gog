@@ -1,6 +1,7 @@
 # gog
 
-[gog](https://pkg.go.dev/github.com/setanarut/gog#section-documentation) is a Go Object-oriented Graphic drawing library for generative art, PNG or ANPG animations
+[gog](https://pkg.go.dev/github.com/setanarut/gog#section-documentation) is a Go Object-oriented 2d drawing library for generative art
+
 
 Instead of immediate drawing, each shape is a `Path{}` struct made up of points. The Path has `Fill()` `Stroke()` `FillStroke()` `StrokeFill()` functions for drawing on the canvas. There is also a `DrawDebug()` function for Debug purposes that draws all the properties of the Path.
 
@@ -11,6 +12,8 @@ All transformations are made with reference to the Path.Anchor point.
 - `Path.Rotate()`
 - `Path.Rotated()`
 - `Path.Scale()`
+
+It is possible to write the canvas (Go standard package image surface) as a static PNG file or APNG animation.
 
 ```Go
 package main
