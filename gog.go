@@ -116,6 +116,10 @@ func (canv *context) SavePNG(filePath string) {
 	writePNG(filePath, canv.surface)
 }
 
+// Surface returns canvas surface image
+func (canv *context) Surface() *image.RGBA {
+	return canv.surface
+}
 // SaveAPNG Saves APNG animation addes with AppendAnimationFrame().
 //
 // The successive delay times, one per frame, in 100ths of a second. (2 for 50 FPS, 4 for 25 FPS)
