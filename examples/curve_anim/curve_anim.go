@@ -8,7 +8,7 @@ import (
 
 func main() {
 	c := gog.New(250, 250)
-	curve := gog.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200)
+	curve := gog.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200, 50)
 	curve.SetPos(c.Center).Scale(gog.P(1.3, 1.3))
 	for i := 0; i < 150; i++ {
 		c.Clear(color.Gray{30})

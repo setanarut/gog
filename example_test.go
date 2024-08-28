@@ -10,7 +10,7 @@ import (
 // 150-frame rotating cubic bezier APNG animation
 func Example() {
 	ctx := gog.New(250, 250)
-	curve := gog.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200)
+	curve := gog.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200, 50)
 	curve.SetPos(ctx.Center)
 	for i := 0; i < 150; i++ {
 		ctx.Clear(color.Gray{30})

@@ -12,6 +12,9 @@ func NewPath(points []Point) *Path {
 	}
 
 	if len(points) > 1 {
+		// if newPath.IsClosed() == false {
+		// 	newPath.Close()
+		// }
 		newPath.SetAnchor(newPath.Centroid())
 	}
 	newPath.calculateLength()
@@ -30,9 +33,9 @@ func Line(start, end Point) *Path {
 }
 
 // CubicBezier returns a cubic-bezier Path.
-func CubicBezier(x0, y0, x1, y1, x2, y2, x3, y3 float64) *Path {
+func CubicBezier(x0, y0, x1, y1, x2, y2, x3, y3 float64, samples int) *Path {
 	cb := cubicBezier{[4]Point{{x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}}}
-	p := NewPath(cb.flatten(50)).calculateLength()
+	p := NewPath(cb.flatten(samples)).calculateLength()
 	return p
 }
 
@@ -64,6 +67,48 @@ func Circle(origin Point, radius float64) *Path {
 func RegularPolygon(origin Point, n int, radius float64) *Path {
 	align_angle := (math.Pi / 2) - (math.Pi*2)/float64(n)/2
 	return ellipseSamples(origin, radius, radius, n).Rotate(align_angle)
+}
+
+// Spiral returns spriral
+//
+// n: Loop count
+//
+// radius: Spiral radius
+//
+// angleStep: The amount of angle increase with each step.
+//
+// s := SpiralPoints(250, 250, 0.05)
+func Spiral(n int, radius, angleStep float64) *Path {
+	points := make([]Point, n)
+
+	for i := 0; i < n; i++ {
+		angle := angleStep * float64(i)         // Açıyı her adımda arttırıyoruz
+		r := radius * (float64(i) / float64(n)) // Yarıçap her adımda artıyor
+
+		// x ve y koordinatlarını hesaplıyoruz
+		x := r * math.Cos(angle)
+		y := r * math.Sin(angle)
+
+		points[i] = Point{x, y}
+	}
+	return NewPath(points)
+}
+
+// Lemniscate generates the points for an infinity symbol (Lemniscate)
+//
+// n: Number of points
+//
+// a: Width of the infinity symbol
+func Lemniscate(n int, a float64) *Path {
+	points := make([]Point, n)
+	step := (2 * math.Pi) / float64(n) // Calculate the step size for the angle range from -pi to pi
+	for i := 0; i < n; i++ {
+		t := -math.Pi + step*float64(i) // Adjust t to be between -pi and pi
+		x := a * math.Cos(t) / (1 + math.Pow(math.Sin(t), 2))
+		y := a * math.Cos(t) * math.Sin(t) / (1 + math.Pow(math.Sin(t), 2))
+		points[i] = Point{x, y}
+	}
+	return NewPath(points)
 }
 
 // ellipseSamples returns an ellipseSamples-shaped Path.

@@ -9,7 +9,7 @@ import (
 
 func main() {
 	c := gog.New(450, 220).Clear(color.Gray{100})
-	curve := gog.CubicBezier(13, 17, 44, 12, 67, 23, 29, 59).Scale(gog.P(1.4, 1.4))
+	curve := gog.CubicBezier(13, 17, 44, 12, 67, 23, 29, 59, 100).Scale(gog.P(1.4, 1.4))
 	for i := 0; i < 5; i++ {
 		curve.SetPos(gog.P(float64(i)*80+80, 50))
 		curve.Style.Cap = gog.CapMode(i)
