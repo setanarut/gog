@@ -98,14 +98,14 @@ func Spiral(n int, radius, angleStep float64) *Path {
 //
 // n: Number of points
 //
-// a: Width of the infinity symbol
-func Lemniscate(n int, a float64) *Path {
+// w: Half width of the infinity symbol
+func Lemniscate(n int, w float64) *Path {
 	points := make([]Point, n)
 	step := (2 * math.Pi) / float64(n) // Calculate the step size for the angle range from -pi to pi
 	for i := 0; i < n; i++ {
 		t := -math.Pi + step*float64(i) // Adjust t to be between -pi and pi
-		x := a * math.Cos(t) / (1 + math.Pow(math.Sin(t), 2))
-		y := a * math.Cos(t) * math.Sin(t) / (1 + math.Pow(math.Sin(t), 2))
+		x := w * math.Cos(t) / (1 + math.Pow(math.Sin(t), 2))
+		y := w * math.Cos(t) * math.Sin(t) / (1 + math.Pow(math.Sin(t), 2))
 		points[i] = Point{x, y}
 	}
 	return NewPath(points)
