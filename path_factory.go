@@ -54,19 +54,19 @@ func Square(topLeft Point, side float64) *Path {
 // Ellipse returns ellipse-shaped Path.
 func Ellipse(origin Point, xRadius, yRadius float64) *Path {
 	samples := int(clip(xRadius, 20, 80))
-	return ellipseSamples(origin, xRadius, yRadius, samples)
+	return EllipseSamples(origin, xRadius, yRadius, samples)
 }
 
 // Circle returns circle-shaped Path.
 func Circle(origin Point, radius float64) *Path {
 	samples := int(clip(radius, 20, 80))
-	return ellipseSamples(origin, radius, radius, samples)
+	return EllipseSamples(origin, radius, radius, samples)
 }
 
 // RegularPolygon returns regular polygon shaped Path.
 func RegularPolygon(origin Point, n int, radius float64) *Path {
 	align_angle := (math.Pi / 2) - (math.Pi*2)/float64(n)/2
-	return ellipseSamples(origin, radius, radius, n).Rotate(align_angle)
+	return EllipseSamples(origin, radius, radius, n).Rotate(align_angle)
 }
 
 // Spiral returns spriral
@@ -111,8 +111,8 @@ func Lemniscate(n int, w float64) *Path {
 	return NewPath(points)
 }
 
-// ellipseSamples returns an ellipseSamples-shaped Path.
-func ellipseSamples(origin Point, xRadius, yRadius float64, samples int) *Path {
+// EllipseSamples returns an ellipse-shaped Path.
+func EllipseSamples(origin Point, xRadius, yRadius float64, samples int) *Path {
 	points := make([]Point, 0)
 	angleStep := 2 * math.Pi / float64(samples)
 	for i := 0; i < samples; i++ {
