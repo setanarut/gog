@@ -51,6 +51,4 @@ for _, t := range gog.Linspace(0, 1, 150) {
 }
 ```
 
-[Full code](./examples/point_angle/point_angle.go) is available in example folder
-
 ![curve](./examples/point_angle/point_angle.png)
