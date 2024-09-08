@@ -317,8 +317,8 @@ func (p *Path) SetStyle(s Style) *Path {
 	return p
 }
 
-// SetFill sets fill color of Path.
-func (p *Path) SetFill(c color.Color) *Path {
+// SetFillColor sets fill color of Path.
+func (p *Path) SetFillColor(c color.Color) *Path {
 	p.Style.Fill = c
 	return p
 }

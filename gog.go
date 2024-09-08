@@ -142,18 +142,18 @@ func (c *Context) DebugDraw(pt *path.Path) {
 	c.Stroke(BBox(p.Bounds()).SetStrokeColor(colornames.Magenta))
 	// END
 	dot := Circle(p.Start(), 2)
-	dot.SetFill(colornames.Yellow)
+	dot.SetFillColor(colornames.Yellow)
 	dot.SetPos(p.End())
 	c.Fill(dot)
 	// START
-	dot.SetFill(colornames.Yellow)
+	dot.SetFillColor(colornames.Yellow)
 	dot.SetPos(p.Start())
 	c.Fill(dot)
 	// SECOND POINT
-	dot.SetPos(p.Points()[1]).SetFill(colornames.Orangered)
+	dot.SetPos(p.Points()[1]).SetFillColor(colornames.Orangered)
 	c.Fill(dot)
 	// POINTS
-	dot.SetFill(colornames.White)
+	dot.SetFillColor(colornames.White)
 	for i := 2; i < p.Len()-1; i++ {
 		dot.SetPos(p.Points()[i])
 		c.Fill(dot)

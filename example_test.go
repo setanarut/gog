@@ -104,7 +104,7 @@ func ExampleStyle() {
 	square := gog.Square(vec.Vec2{10, 10}, 50).SetStyle(myStyle)
 	square2 := gog.Square(vec.Vec2{10, 10}, 50)
 	square2.Style = myStyle2
-	square2.SetFill(color.RGBA{0, 255, 255, 255})
+	square2.SetFillColor(color.RGBA{0, 255, 255, 255})
 	fmt.Printf("%+v\n%+v", square.Style, square2.Style)
 	// Output:
 	// {Fill:{R:255 G:0 B:0 A:255} Stroke:{Y:128} LineWidth:10 Cap:2 Join:1}
