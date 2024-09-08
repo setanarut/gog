@@ -1,4 +1,4 @@
-package gog
+package path
 
 import (
 	"image/color"

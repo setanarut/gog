@@ -1,4 +1,4 @@
-package gog
+package utils
 
 import (
 	"bufio"
@@ -9,14 +9,15 @@ import (
 	"os"
 
 	"github.com/cia-rana/goapng"
+	"github.com/setanarut/gog/v2/vec"
 )
 
 // TangentAngle return tangent angle of two points
-func TangentAngle(start, end Point) float64 {
+func TangentAngle(start, end vec.Vec2) float64 {
 	return math.Atan2(end.Y-start.Y, end.X-start.X)
 }
 
-func clip(number, min, max float64) float64 {
+func Clip(number, min, max float64) float64 {
 	if number < min {
 		number = min
 	} else if number > max {
@@ -26,27 +27,15 @@ func clip(number, min, max float64) float64 {
 }
 
 // OppositeAngle returns opposite angle
-func oppositeAngle(angle float64) float64 {
+func OppositeAngle(angle float64) float64 {
 	return math.Mod((angle + math.Pi), (2 * math.Pi))
 }
 
-// pointOnCircle returns point at angle
-func pointOnCircle(center Point, radius float64, angle float64) Point {
+// PointOnCircle returns point at angle
+func PointOnCircle(center vec.Vec2, radius float64, angle float64) vec.Vec2 {
 	x := center.X + (radius * math.Cos(angle))
 	y := center.Y + (radius * math.Sin(angle))
-	return Point{x, y}
-}
-
-// deepCopyPath returns copy of path
-func deepCopyPath(p *Path) *Path {
-	newPath := new(Path)
-	newCoords := make([]Point, len(p.points))
-	copy(newCoords, p.points)
-	newPath.points = newCoords
-	newPath.Style = p.Style
-	newPath.Anchor = p.Anchor
-	newPath.length = p.length
-	return newPath
+	return vec.Vec2{x, y}
 }
 
 // Radians converts degrees to radians
@@ -72,8 +61,8 @@ func Linspace(start, stop float64, num int) (res []float64) {
 	return
 }
 
-// writePNG writes PNG mage to disk.
-func writePNG(filePath string, img image.Image) {
+// WritePNG writes PNG mage to disk.
+func WritePNG(filePath string, img image.Image) {
 	outFile, err := os.Create(filePath)
 	if err != nil {
 		log.Println(err)
@@ -94,7 +83,7 @@ func writePNG(filePath string, img image.Image) {
 
 }
 
-func writeAnimatedPNG(filePath string, images []image.Image, delay uint16) {
+func WriteAnimatedPNG(filePath string, images []image.Image, delay uint16) {
 	totalFrames := len(images)
 	delays := make([]uint16, totalFrames)
 	for i := range delays {
@@ -111,7 +100,7 @@ func writeAnimatedPNG(filePath string, images []image.Image, delay uint16) {
 	goapng.EncodeAll(file, &animPng)
 }
 
-func cloneRGBAImage(img *image.RGBA) image.Image {
+func CloneRGBAImage(img *image.RGBA) image.Image {
 	clone := image.NewRGBA(img.Rect)
 	copy(clone.Pix, img.Pix)
 	return clone

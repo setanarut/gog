@@ -7,6 +7,9 @@ import (
 	"image/draw"
 	"math"
 
+	"github.com/setanarut/gog/v2/path"
+	"github.com/setanarut/gog/v2/utils"
+	"github.com/setanarut/gog/v2/vec"
 	"github.com/srwiley/rasterx"
 	"github.com/srwiley/scanFT"
 	"golang.org/x/image/colornames"
@@ -16,19 +19,19 @@ import (
 var Pi float64 = math.Pi
 
 // New returns a new drawing context.
-func New(width, height int) *context {
-	c := new(context)
+func New(width, height int) *Context {
+	c := new(Context)
 	c.surface = image.NewRGBA(image.Rect(0, 0, width, height))
 	c.painter = scanFT.NewRGBAPainter(c.surface)
 	c.scannerFreeType = scanFT.NewScannerFT(width, height, c.painter)
 	c.stroker = rasterx.NewStroker(width, height, c.scannerFreeType)
 	c.filler = &c.stroker.Filler
-	c.Center = Point{float64(width) / 2, float64(height) / 2}
-	c.Clear(Black)
+	c.Center = vec.Vec2{float64(width) / 2, float64(height) / 2}
+	c.Clear(colornames.Black)
 	return c
 }
 
-type context struct {
+type Context struct {
 	surface         *image.RGBA
 	painter         *scanFT.RGBAPainter
 	scannerFreeType *scanFT.ScannerFT
@@ -36,14 +39,14 @@ type context struct {
 	stroker         *rasterx.Stroker
 	AnimationFrames []image.Image
 	// Center point of Canvas
-	Center Point
+	Center vec.Vec2
 }
 
 // Fill draws path with fill
-func (canv *context) Fill(p *Path) {
-	canv.filler.Start(p.Start().Fixed())
-	for _, pt := range p.points {
-		canv.filler.Line(pt.Fixed())
+func (canv *Context) Fill(p *path.Path) {
+	canv.filler.Start(vec.ToFixed(p.Start()))
+	for _, pt := range p.Points() {
+		canv.filler.Line(vec.ToFixed(pt))
 	}
 	canv.filler.SetColor(p.Style.Fill)
 	canv.filler.Stop(p.IsClosed())
@@ -52,29 +55,29 @@ func (canv *context) Fill(p *Path) {
 }
 
 // Stroke draw paths with stroke
-func (canv *context) Stroke(p *Path) {
+func (canv *Context) Stroke(p *path.Path) {
 	var capFunction rasterx.CapFunc
 	var joinStyle rasterx.JoinMode
 
 	switch p.Style.Cap {
-	case ButtCap:
+	case path.ButtCap:
 		capFunction = rasterx.ButtCap
-	case SquareCap:
+	case path.SquareCap:
 		capFunction = rasterx.SquareCap
-	case RoundCap:
+	case path.RoundCap:
 		capFunction = rasterx.RoundCap
-	case CubicCap:
+	case path.CubicCap:
 		capFunction = rasterx.CubicCap
-	case QuadraticCap:
+	case path.QuadraticCap:
 		capFunction = rasterx.QuadraticCap
 	}
 
 	switch p.Style.Join {
-	case MiterJoin:
+	case path.MiterJoin:
 		joinStyle = rasterx.Miter
-	case RoundJoin:
+	case path.RoundJoin:
 		joinStyle = rasterx.Round
-	case BevelJoin:
+	case path.BevelJoin:
 		joinStyle = rasterx.Bevel
 
 	}
@@ -87,9 +90,9 @@ func (canv *context) Stroke(p *Path) {
 		rasterx.RoundGap,                    // gap
 		joinStyle)                           // join mode
 
-	canv.stroker.Start(p.Start().Fixed())
-	for i := 1; i < len(p.points); i++ {
-		canv.stroker.Line(p.points[i].Fixed())
+	canv.stroker.Start(vec.ToFixed(p.Start()))
+	for i := 1; i < len(p.Points()); i++ {
+		canv.stroker.Line(vec.ToFixed(p.Points()[i]))
 	}
 
 	canv.stroker.SetColor(p.Style.Stroke)
@@ -99,7 +102,7 @@ func (canv *context) Stroke(p *Path) {
 }
 
 // Clear clears canvas
-func (canv *context) Clear(c color.Color) *context {
+func (canv *Context) Clear(c color.Color) *Context {
 	// m := image.NewRGBA(image.Rect(0, 0, 640, 480))
 	draw.Draw(canv.surface, canv.surface.Bounds(),
 		&image.Uniform{c}, image.Point{}, draw.Src)
@@ -107,35 +110,36 @@ func (canv *context) Clear(c color.Color) *context {
 }
 
 // AppendAnimationFrame appends current canvas to animation frames.
-func (canv *context) AppendAnimationFrame() {
-	canv.AnimationFrames = append(canv.AnimationFrames, cloneRGBAImage(canv.surface))
+func (canv *Context) AppendAnimationFrame() {
+	canv.AnimationFrames = append(canv.AnimationFrames, utils.CloneRGBAImage(canv.surface))
 }
 
 // SavePNG saves current canvas as static image
-func (canv *context) SavePNG(filePath string) {
-	writePNG(filePath, canv.surface)
+func (canv *Context) SavePNG(filePath string) {
+	utils.WritePNG(filePath, canv.surface)
 }
 
 // Surface returns canvas surface image
-func (canv *context) Surface() *image.RGBA {
+func (canv *Context) Surface() *image.RGBA {
 	return canv.surface
 }
+
 // SaveAPNG Saves APNG animation addes with AppendAnimationFrame().
 //
 // The successive delay times, one per frame, in 100ths of a second. (2 for 50 FPS, 4 for 25 FPS)
-func (canv *context) SaveAPNG(filePath string, delay int) {
+func (canv *Context) SaveAPNG(filePath string, delay int) {
 	if len(canv.AnimationFrames) == 0 {
 		panic("There is no frame in the image sequence, add at least one frame with AppendAnimationFrame().")
 	}
-	writeAnimatedPNG(filePath, canv.AnimationFrames, uint16(delay))
+	utils.WriteAnimatedPNG(filePath, canv.AnimationFrames, uint16(delay))
 }
 
 // DebugDraw draws Path attributes for debug
-func (c *context) DebugDraw(path *Path) {
+func (c *Context) DebugDraw(pt *path.Path) {
 
-	p := path.Clone()
+	p := pt.Clone()
 	// BBOX
-	BBox(p.Bounds()).SetStroke(colornames.Magenta).Stroke(c)
+	c.Stroke(BBox(p.Bounds()).SetStrokeColor(colornames.Magenta))
 	// END
 	dot := Circle(p.Start(), 2)
 	dot.SetFill(colornames.Yellow)
@@ -146,29 +150,29 @@ func (c *context) DebugDraw(path *Path) {
 	dot.SetPos(p.Start())
 	c.Fill(dot)
 	// SECOND POINT
-	dot.SetPos(p.points[1]).SetFill(colornames.Orangered)
+	dot.SetPos(p.Points()[1]).SetFill(colornames.Orangered)
 	c.Fill(dot)
 	// POINTS
 	dot.SetFill(colornames.White)
 	for i := 2; i < p.Len()-1; i++ {
-		dot.SetPos(p.points[i])
+		dot.SetPos(p.Points()[i])
 		c.Fill(dot)
 	}
 	// STROKE PATH
 	st := p.Style.Stroke
 	p.SetLineWidth(1)
-	p.SetStroke(Gray)
-	p.Stroke(c)
-	p.SetStroke(st)
+	p.SetStrokeColor(pt.Style.Stroke)
+	c.Stroke(p)
+	p.SetStrokeColor(st)
 
 	// centroid
 	dot.SetLineWidth(2)
-	dot.SetStroke(colornames.Cyan)
-	dot.SetPos(p.Centroid()).Scale(Point{2, 2})
+	dot.SetStrokeColor(colornames.Cyan)
+	dot.SetPos(p.Centroid()).Scale(vec.Vec2{2, 2})
 	c.Stroke(dot)
 
 	// BBox Center
-	dot.SetStroke(colornames.Orange)
+	dot.SetStrokeColor(colornames.Orange)
 	a, b := p.Bounds()
 	dot.SetPos(a.Lerp(b, 0.5))
 	c.Stroke(dot)
