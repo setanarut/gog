@@ -3,20 +3,22 @@ package gog_test
 import (
 	"fmt"
 	"image/color"
+	"math"
 
 	"github.com/setanarut/gog/v2"
 	"github.com/setanarut/gog/v2/path"
-	"github.com/setanarut/gog/v2/vec"
+	"github.com/setanarut/gog/v2/shapes"
+	"github.com/setanarut/vec"
 )
 
 // 150-frame rotating cubic bezier APNG animation
 func Example() {
 	ctx := gog.NewContext(250, 250)
-	curve := gog.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200, 50)
+	curve := shapes.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200, 50)
 	curve.SetPos(ctx.Center)
 	for i := 0; i < 150; i++ {
 		ctx.Clear(color.Gray{30})
-		curve.Rotate((gog.Pi * 2) / 150)
+		curve.Rotate((math.Pi * 2) / 150)
 		ctx.DebugDraw(curve)
 		ctx.AppendAnimationFrame()
 	}
@@ -28,19 +30,10 @@ func Example() {
 
 // Creates new line and prints start and end point
 func ExampleLine() {
-	line := gog.Line(vec.Vec2{X: 0, Y: 0}, vec.Vec2{X: 25, Y: 80})
+	line := shapes.Line(vec.Vec2{X: 0, Y: 0}, vec.Vec2{X: 25, Y: 80})
 	fmt.Println(line.Start(), line.End())
 	// Output:
 	// Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 25.000000, Y: 80.000000}
-}
-
-// Get point and tangent angle at time t
-func ExamplePath_PointAngleAtTime() {
-	line := path.NewPath([]vec.Vec2{{X: 0, Y: 0}, {X: 10, Y: 10}})
-	point, angle := line.PointAngleAtTime(0.5)
-	fmt.Println(point, angle)
-	// Output:
-	// Vec2{X: 5.000000, Y: 5.000000} 0.7853981633974483
 }
 
 // Get point and tangent angle at length
@@ -90,20 +83,4 @@ func ExamplePath_RemoveDoubles() {
 	fmt.Println(path.Points())
 	// Output:
 	// [Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 77.000000, Y: 77.000000} Vec2{X: 0.000000, Y: 0.000000}]
-}
-func ExampleStyle() {
-	style1 := gog.NewStyle(color.RGBA{255, 0, 0, 255},
-		color.Gray{128}, 10, gog.RoundCap, gog.RoundJoin)
-
-	style2 := gog.Style{
-		Fill:        color.RGBA{255, 255, 0, 255},
-		StrokeColor: color.RGBA{255, 0, 255, 255},
-		LineWidth:   7,
-		Cap:         gog.CubicCap,
-		Join:        gog.BevelJoin,
-	}
-	fmt.Printf("%+v\n%+v", style1, style2)
-	// Output:
-	// {Fill:{R:255 G:0 B:0 A:255} Stroke:{Y:128} LineWidth:10 Cap:2 Join:1}
-	// {Fill:{R:0 G:255 B:255 A:255} Stroke:{R:255 G:0 B:255 A:255} LineWidth:7 Cap:3 Join:2}
 }

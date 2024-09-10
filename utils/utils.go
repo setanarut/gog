@@ -9,7 +9,7 @@ import (
 	"os"
 
 	"github.com/cia-rana/goapng"
-	"github.com/setanarut/gog/v2/vec"
+	"github.com/setanarut/vec"
 )
 
 // TangentAngle return tangent angle of two points

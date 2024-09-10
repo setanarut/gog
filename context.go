@@ -9,7 +9,7 @@ import (
 	"github.com/setanarut/gog/v2/path"
 	"github.com/setanarut/gog/v2/shapes"
 	"github.com/setanarut/gog/v2/utils"
-	"github.com/setanarut/gog/v2/vec"
+	"github.com/setanarut/vec"
 	"github.com/srwiley/rasterx"
 	"github.com/srwiley/scanFT"
 	"golang.org/x/image/math/fixed"

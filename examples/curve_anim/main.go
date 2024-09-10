@@ -6,7 +6,7 @@ import (
 
 	"github.com/setanarut/gog/v2"
 	"github.com/setanarut/gog/v2/shapes"
-	"github.com/setanarut/gog/v2/vec"
+	"github.com/setanarut/vec"
 )
 
 func main() {

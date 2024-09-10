@@ -6,7 +6,7 @@ import (
 	"slices"
 
 	"github.com/setanarut/gog/v2/utils"
-	"github.com/setanarut/gog/v2/vec"
+	"github.com/setanarut/vec"
 )
 
 // Path object
