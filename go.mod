@@ -1,4 +1,4 @@
-module github.com/setanarut/gog
+module github.com/setanarut/gog/v2
 
 go 1.21.3
 

@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/setanarut/gog?status.svg)](https://pkg.go.dev/github.com/setanarut/gog)
+[![GoDoc](https://godoc.org/github.com/setanarut/gog/v2?status.svg)](https://pkg.go.dev/github.com/setanarut/gog/v2)
 
 # GOG
 
