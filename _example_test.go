@@ -11,7 +11,7 @@ import (
 
 // 150-frame rotating cubic bezier APNG animation
 func Example() {
-	ctx := gog.New(250, 250)
+	ctx := gog.NewContext(250, 250)
 	curve := gog.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200, 50)
 	curve.SetPos(ctx.Center)
 	for i := 0; i < 150; i++ {
@@ -92,20 +92,17 @@ func ExamplePath_RemoveDoubles() {
 	// [Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 77.000000, Y: 77.000000} Vec2{X: 0.000000, Y: 0.000000}]
 }
 func ExampleStyle() {
-	myStyle := path.NewStyle(color.RGBA{255, 0, 0, 255},
-		color.Gray{128}, 10, path.RoundCap, path.RoundJoin)
-	myStyle2 := path.Style{
-		Fill:      color.RGBA{255, 255, 0, 255},
-		Stroke:    color.RGBA{255, 0, 255, 255},
-		LineWidth: 7,
-		Cap:       path.CubicCap,
-		Join:      path.BevelJoin,
+	style1 := gog.NewStyle(color.RGBA{255, 0, 0, 255},
+		color.Gray{128}, 10, gog.RoundCap, gog.RoundJoin)
+
+	style2 := gog.Style{
+		Fill:        color.RGBA{255, 255, 0, 255},
+		StrokeColor: color.RGBA{255, 0, 255, 255},
+		LineWidth:   7,
+		Cap:         gog.CubicCap,
+		Join:        gog.BevelJoin,
 	}
-	square := gog.Square(vec.Vec2{10, 10}, 50).SetStyle(myStyle)
-	square2 := gog.Square(vec.Vec2{10, 10}, 50)
-	square2.Style = myStyle2
-	square2.SetFillColor(color.RGBA{0, 255, 255, 255})
-	fmt.Printf("%+v\n%+v", square.Style, square2.Style)
+	fmt.Printf("%+v\n%+v", style1, style2)
 	// Output:
 	// {Fill:{R:255 G:0 B:0 A:255} Stroke:{Y:128} LineWidth:10 Cap:2 Join:1}
 	// {Fill:{R:0 G:255 B:255 A:255} Stroke:{R:255 G:0 B:255 A:255} LineWidth:7 Cap:3 Join:2}
