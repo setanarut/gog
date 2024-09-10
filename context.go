@@ -11,52 +11,68 @@ import (
 	"github.com/setanarut/gog/v2/vec"
 	"github.com/srwiley/rasterx"
 	"github.com/srwiley/scanFT"
-	"golang.org/x/image/colornames"
 	"golang.org/x/image/math/fixed"
 )
 
+var yellow = color.RGBA{255, 255, 0, 255}
+var orangered = color.RGBA{255, 69, 0, 255}
+
+var debugPathStrokeStyle = &StrokeStyle{
+	Color:     color.White,
+	LineWidth: 1,
+}
+var debugCentroidStrokeStyle = &StrokeStyle{
+	Color:     color.RGBA{0, 255, 255, 255},
+	LineWidth: 2,
+}
+var debugBBoxCenterStrokeStyle = &StrokeStyle{
+	Color:     color.RGBA{255, 128, 0, 255},
+	LineWidth: 2,
+}
+
 type Context struct {
+	AnimationFrames []image.Image
+	// Center point of Canvas
+	Center vec.Vec2
+
 	surface         *image.RGBA
 	painter         *scanFT.RGBAPainter
 	scannerFreeType *scanFT.ScannerFT
 	filler          *rasterx.Filler
 	stroker         *rasterx.Stroker
-	AnimationFrames []image.Image
-	// Center point of Canvas
-	Center vec.Vec2
 }
 
 // NewContext returns a new drawing context.
 func NewContext(width, height int) *Context {
-	c := new(Context)
-	c.surface = image.NewRGBA(image.Rect(0, 0, width, height))
-	c.painter = scanFT.NewRGBAPainter(c.surface)
-	c.scannerFreeType = scanFT.NewScannerFT(width, height, c.painter)
-	c.stroker = rasterx.NewStroker(width, height, c.scannerFreeType)
-	c.filler = &c.stroker.Filler
-	c.Center = vec.Vec2{float64(width) / 2, float64(height) / 2}
-	c.Clear(color.Black)
-	return c
+	ctx := new(Context)
+	ctx.surface = image.NewRGBA(image.Rect(0, 0, width, height))
+	ctx.painter = scanFT.NewRGBAPainter(ctx.surface)
+	ctx.scannerFreeType = scanFT.NewScannerFT(width, height, ctx.painter)
+	ctx.stroker = rasterx.NewStroker(width, height, ctx.scannerFreeType)
+	ctx.filler = &ctx.stroker.Filler
+	ctx.Center = vec.Vec2{float64(width) / 2, float64(height) / 2}
+	ctx.Clear(color.Black)
+	return ctx
 }
 
-// Fill draws path with fill
-func (c *Context) Fill(p *path.Path, s *Style) {
-	c.filler.Start(vec.ToFixed(p.Start()))
+// Fill draws path with fillColor
+func (ctx *Context) Fill(p *path.Path, fillColor color.Color) {
+	ctx.filler.Start(vec.ToFixed(p.Start()))
 	for _, pt := range p.Points() {
-		c.filler.Line(vec.ToFixed(pt))
+		ctx.filler.Line(vec.ToFixed(pt))
 	}
-	c.filler.SetColor(s.Fill)
-	c.filler.Stop(p.IsClosed())
-	c.filler.Draw()
-	c.filler.Clear()
+	ctx.filler.SetColor(fillColor)
+	ctx.filler.Stop(p.IsClosed())
+	ctx.filler.Draw()
+	ctx.filler.Clear()
 }
 
-// Stroke draw paths with stroke
-func (ctx *Context) Stroke(p *path.Path, style *Style) {
+// Stroke draw paths with StrokeStyle
+func (ctx *Context) Stroke(p *path.Path, strokeStyle *StrokeStyle) {
 	var capFunction rasterx.CapFunc
 	var joinStyle rasterx.JoinMode
 
-	switch style.Cap {
+	switch strokeStyle.Cap {
 	case ButtCap:
 		capFunction = rasterx.ButtCap
 	case SquareCap:
@@ -69,7 +85,7 @@ func (ctx *Context) Stroke(p *path.Path, style *Style) {
 		capFunction = rasterx.QuadraticCap
 	}
 
-	switch style.Join {
+	switch strokeStyle.Join {
 	case MiterJoin:
 		joinStyle = rasterx.Miter
 	case RoundJoin:
@@ -80,19 +96,19 @@ func (ctx *Context) Stroke(p *path.Path, style *Style) {
 	}
 
 	ctx.stroker.SetStroke(
-		fixed.Int26_6(style.LineWidth*64), // line width
-		fixed.Int26_6(3*64),               // miter limit
-		capFunction,                       // cap L
-		capFunction,                       // cap T
-		rasterx.RoundGap,                  // gap
-		joinStyle)                         // join mode
+		fixed.Int26_6(strokeStyle.LineWidth*64), // line width
+		fixed.Int26_6(3*64),                     // miter limit
+		capFunction,                             // cap L
+		capFunction,                             // cap T
+		rasterx.RoundGap,                        // gap
+		joinStyle)                               // join mode
 
 	ctx.stroker.Start(vec.ToFixed(p.Start()))
 	for i := 1; i < len(p.Points()); i++ {
 		ctx.stroker.Line(vec.ToFixed(p.Points()[i]))
 	}
 
-	ctx.stroker.SetColor(style.StrokeColor)
+	ctx.stroker.SetColor(strokeStyle.Color)
 	ctx.stroker.Stop(p.IsClosed())
 	ctx.stroker.Draw()
 	ctx.stroker.Clear()
@@ -143,43 +159,30 @@ func (ctx *Context) DebugDraw(pth *path.Path) {
 	ctx.Stroke(BBox(pth.Bounds()), debugStyle)
 
 	// Draw start point
-	dot.SetFillColor(colornames.Yellow)
-	dot.SetPos(pth.Start())
-	ctx.Fill(dot)
+	circle := Circle(pth.Start(), 2)
+	ctx.Fill(circle, yellow)
 
 	// Draw end point
-	dot := Circle(pth.Start(), 2)
-	dot.SetFillColor(colornames.Yellow)
-	dot.SetPos(pth.End())
-	ctx.Fill(dot)
+	ctx.Fill(circle.SetPos(pth.End()), yellow)
 
-	// Draw Second point
-	dot.SetPos(pth.Points()[1]).SetFillColor(colornames.Orangered)
-	ctx.Fill(dot)
+	// Draw second point
+	ctx.Fill(circle.SetPos(pth.Points()[1]), orangered)
 
-	// Draw Points
-	dot.SetFillColor(colornames.White)
+	// Draw all points
 	for i := 2; i < pth.Len()-1; i++ {
-		dot.SetPos(pth.Points()[i])
-		ctx.Fill(dot)
+		circle.SetPos(pth.Points()[i])
+		ctx.Fill(circle, color.White)
 	}
-	// Draw Stroke path
-	st := Style.StrokeColor
-	pth.SetLineWidth(1)
-	pth.SetStrokeColor(p.Style.Stroke)
-	ctx.Stroke(pth)
-	pth.SetStrokeColor(st)
+	// Draw path stroke
+	ctx.Stroke(pth, debugPathStrokeStyle)
 
 	// Draw Centroid
-	dot.SetLineWidth(2)
-	dot.SetStrokeColor(colornames.Cyan)
-	dot.SetPos(pth.Centroid()).Scale(vec.Vec2{2, 2})
-	ctx.Stroke(dot)
+	circle.SetPos(pth.Centroid()).Scale(vec.Vec2{2, 2})
+	ctx.Stroke(circle, debugCentroidStrokeStyle)
 
-	// Draw BBox Center
-	dot.SetStrokeColor(colornames.Orange)
+	// Draw BBox center
 	a, b := pth.Bounds()
-	dot.SetPos(a.Lerp(b, 0.5))
-	ctx.Stroke(dot)
+	circle.SetPos(a.Lerp(b, 0.5))
+	ctx.Stroke(circle, debugBBoxCenterStrokeStyle)
 
 }

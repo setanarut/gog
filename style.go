@@ -26,19 +26,18 @@ type (
 	DrawMode uint8
 )
 
-var debugStyle *Style = &Style{
-	Fill:        color.RGBA{255, 255, 0, 255}, //Yellow
-	StrokeColor: color.RGBA{255, 0, 255, 255}, //Magenta
-	LineWidth:   1.5,
-	Cap:         ButtCap,
-	Join:        MiterJoin,
+var debugStyle *StrokeStyle = &StrokeStyle{
+	// FillColor:   color.RGBA{255, 255, 0, 255}, //Yellow
+	Color:     color.RGBA{255, 0, 255, 255}, //Magenta
+	LineWidth: 1.5,
+	Cap:       ButtCap,
+	Join:      MiterJoin,
 }
 
 // Style of path
-type Style struct {
-	Fill        color.Color
-	StrokeColor color.Color
-	LineWidth   float64
+type StrokeStyle struct {
+	Color     color.Color
+	LineWidth float64
 	// Line cap style constant
 	//
 	// 0=ButtCap 1=SquareCap 2=RoundCap 3=CubicCap 4=QuadraticCap
@@ -49,24 +48,31 @@ type Style struct {
 	Join JoinMode
 }
 
+func (s *StrokeStyle) SetColor(c color.Color) *StrokeStyle {
+	s.Color = c
+	return s
+}
+func (s *StrokeStyle) SetLineWidth(w float64) *StrokeStyle {
+	s.LineWidth = w
+	return s
+}
+
 // NewStyle shorthand for create Style{}
-func NewStyle(fillColor, strokeColor color.Color, lineWidth float64, cap CapMode, join JoinMode) *Style {
-	return &Style{
-		Fill:        fillColor,
-		StrokeColor: strokeColor,
-		LineWidth:   lineWidth,
-		Cap:         cap,
-		Join:        join,
+func NewStrokeStyle(fillColor, strokeColor color.Color, lineWidth float64, cap CapMode, join JoinMode) *StrokeStyle {
+	return &StrokeStyle{
+		Color:     strokeColor,
+		LineWidth: lineWidth,
+		Cap:       cap,
+		Join:      join,
 	}
 }
 
 // DefaultStyle returns default style
-func DefaultStyle() *Style {
-	return &Style{
-		Fill:        color.Gray{128},
-		StrokeColor: color.White,
-		LineWidth:   1.5,
-		Cap:         ButtCap,
-		Join:        MiterJoin,
+func DefaultStrokeStyle() *StrokeStyle {
+	return &StrokeStyle{
+		Color:     color.White,
+		LineWidth: 1.5,
+		Cap:       ButtCap,
+		Join:      MiterJoin,
 	}
 }

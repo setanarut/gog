@@ -307,7 +307,7 @@ func (p *Path) Scale(factor vec.Vec2) *Path {
 	return p
 }
 
-// calculateLenght calculates total length of path
+// CalculateLength calculates total length of path
 func (p *Path) CalculateLength() *Path {
 	p.length = 0.0
 	for i := 0; i < len(p.points)-1; i++ {
@@ -317,8 +317,6 @@ func (p *Path) CalculateLength() *Path {
 }
 
 // Length returns total length of Path
-//
-// If the length of the Path points has changed with the transformation, you need to recalculate with CalculateLength().
 func (p Path) Length() float64 {
 	return p.length
 }
