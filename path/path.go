@@ -13,11 +13,8 @@ import (
 type Path struct {
 	// Anchor point
 	Anchor vec.Vec2
-
 	// points holds coordinates of Path
 	points []vec.Vec2
-	// length holds total length of Path
-	length float64
 }
 
 // NewPath returns new Path from points
@@ -32,45 +29,46 @@ func NewPath(points []vec.Vec2) *Path {
 		// }
 		newPath.SetAnchor(newPath.Centroid())
 	}
-	newPath.CalculateLength()
 	return newPath
 }
 
-// // DebugDraw draw for debug
-// func (p *Path) DebugDraw(c *context) *Path {
-// 	c.DebugDraw(p)
-// 	return p
-// }
-
 // AppendPoints appends points to the end of the Path
+//
+// This is an operation that changes the path length.
+// If the length is necessary, length should be taken with Length().
 func (p *Path) AppendPoints(points ...vec.Vec2) *Path {
 	p.points = append(p.points, points...)
-	p.CalculateLength()
 	return p
 }
 
 // DeleteEnd removes end point of the Path if the number of points is more than two.
+//
+// This is an operation that changes the path length.
+// If the length is necessary,length should be taken with Length().
 func (p *Path) DeleteEnd() *Path {
 	if len(p.points) > 2 {
 		p.points = p.points[:len(p.points)-1]
-		p.CalculateLength()
 	}
 	return p
 }
 
 // DeleteAtIndex removes point from Path at index if the number of points is more than two.
+//
+// This is an operation that changes the path length.
+// If the length is necessary, length should be taken with Length().
 func (p *Path) DeleteAtIndex(index int) *Path {
 	if len(p.points) > 2 {
 		p.points = slices.Delete(p.points, index, index+1)
-		p.CalculateLength()
 	}
 	return p
 }
 
 // InsertAtIndex inserts point to the Path at index
+//
+// This is an operation that changes the path length.
+// If the length is necessary, length should be taken with Length().
 func (p *Path) InsertAtIndex(pnt vec.Vec2, index int) *Path {
 	p.points = slices.Insert(p.points, index, pnt)
-	p.CalculateLength()
 	return p
 }
 
@@ -81,8 +79,10 @@ func (p *Path) PointAtIndex(index int) vec.Vec2 {
 }
 
 // InsertAtLength inserts point at length if coord is empty
+//
+// This is an operation that changes the path length.
+// If the length is necessary, length should be taken with Length().
 func (p *Path) InsertAtLength(length float64) {
-	length = utils.Clip(length, 0, p.length)
 	traveledDist := 0.0
 	for i := 0; i < len(p.points)-1; i++ {
 		start, end := p.points[i], p.points[i+1]
@@ -93,19 +93,10 @@ func (p *Path) InsertAtLength(length float64) {
 			if pt.Distance(end) > 0.1 {
 				p.InsertAtIndex(pt, i+1)
 			}
-			p.CalculateLength()
 			return
 		}
 		traveledDist += segmentLength
 	}
-}
-
-// InsertAtTime inserts point at time
-func (p *Path) InsertAtTime(t float64) {
-	t = utils.Clip(t, 0, 1)
-	length := t * p.length
-	p.InsertAtLength(length)
-
 }
 
 // RemoveDoubles removes double points
@@ -148,24 +139,27 @@ func (p *Path) Open() *Path {
 }
 
 // Close closes Path
+//
+// This is an operation that changes the path length.
+// If the length is necessary, length should be taken with Length().
 func (p *Path) Close() *Path {
 	if !p.IsClosed() {
 		p.points = append(p.points, p.points[0])
-		p.CalculateLength()
 	}
 	return p
 }
 
-// Returns Perpendicular line points at time t with length
-func (p *Path) Perpendicular(t float64, length float64) (p1 vec.Vec2, p2 vec.Vec2) {
-	pos, ang := p.PointAngleAtTime(t)
+// Returns Perpendicular line points at length
+func (p *Path) Perpendicular(length float64, lineLength float64) (start vec.Vec2, end vec.Vec2) {
+	pos, ang := p.PointAngleAtLength(length)
 	ang += math.Pi * 0.5
-	p1 = utils.PointOnCircle(pos, length/2, ang)
-	p2 = utils.PointOnCircle(pos, length/2, utils.OppositeAngle(ang))
-	return p1, p2
+	start = utils.PointOnCircle(pos, length/2, ang)
+	end = utils.PointOnCircle(pos, length/2, utils.OppositeAngle(ang))
+	return start, end
 }
 
-// Centroid Calculates and returns the path's centroid point
+// Centroid calculates and returns the path's centroid point.
+// Costly operation. Don't use unless necessary.
 func (p *Path) Centroid() vec.Vec2 {
 	total := float64(len(p.points))
 	centroidPoint := vec.Vec2{0, 0}
@@ -185,7 +179,6 @@ func (p *Path) SetAnchor(pt vec.Vec2) *Path {
 
 // PointAngleAtLength Returns point and tangent angle at length
 func (p *Path) PointAngleAtLength(length float64) (vec.Vec2, float64) {
-	length = utils.Clip(length, 0, p.length)
 	traveledDist := 0.0
 	for i := 0; i < len(p.points)-1; i++ {
 		start, end := p.points[i], p.points[i+1]
@@ -198,13 +191,6 @@ func (p *Path) PointAngleAtLength(length float64) (vec.Vec2, float64) {
 		traveledDist += segmentLength
 	}
 	return vec.Vec2{}, 0.0
-}
-
-// PointAngleAtTime Returns point and tangent angle at time t
-func (p *Path) PointAngleAtTime(t float64) (vec.Vec2, float64) {
-	t = utils.Clip(t, 0, 1)
-	length := t * p.length
-	return p.PointAngleAtLength(length)
 }
 
 // IsClosed returns true if Path closed
@@ -299,26 +285,22 @@ func (p *Path) Rotated(angle float64) *Path {
 }
 
 // Scale scales the Path at the Anchor point.
+// CalculateLength() after scaling for
 func (p *Path) Scale(factor vec.Vec2) *Path {
 	for i := 0; i < len(p.points); i++ {
 		p.points[i] = factor.Mult(p.points[i].Sub(p.Anchor)).Add(p.Anchor)
 	}
-	p.CalculateLength()
 	return p
 }
 
-// CalculateLength calculates total length of path
-func (p *Path) CalculateLength() *Path {
-	p.length = 0.0
+// Length calculates and returns total length of path
+// Costly operation. Don't use unless necessary.
+func (p *Path) Length() float64 {
+	length := 0.0
 	for i := 0; i < len(p.points)-1; i++ {
-		p.length += p.points[i].Distance(p.points[i+1])
+		length += p.points[i].Distance(p.points[i+1])
 	}
-	return p
-}
-
-// Length returns total length of Path
-func (p Path) Length() float64 {
-	return p.length
+	return length
 }
 
 // Reverse reverses Path.
@@ -335,6 +317,5 @@ func clonePath(p *Path) *Path {
 	copy(newCoords, p.Points())
 	newPath.SetPoints(newCoords)
 	newPath.Anchor = p.Anchor
-	newPath.length = p.length
 	return newPath
 }

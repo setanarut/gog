@@ -4,12 +4,13 @@ import (
 	"image/color"
 
 	"github.com/setanarut/gog/v2"
+	"github.com/setanarut/gog/v2/shapes"
 	"github.com/setanarut/gog/v2/vec"
 )
 
 func main() {
 	c := gog.NewContext(450, 220).Clear(color.Gray{100})
-	curvePath := gog.CubicBezier(13, 17, 44, 12, 67, 23, 29, 59, 100)
+	curvePath := shapes.CubicBezier(13, 17, 44, 12, 67, 23, 29, 59, 100)
 	curvePath.Scale(vec.Vec2{1.4, 1.4})
 	strokeStyle := gog.DefaultStrokeStyle()
 	for i := 0; i < 5; i++ {

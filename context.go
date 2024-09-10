@@ -7,6 +7,7 @@ import (
 	"image/draw"
 
 	"github.com/setanarut/gog/v2/path"
+	"github.com/setanarut/gog/v2/shapes"
 	"github.com/setanarut/gog/v2/utils"
 	"github.com/setanarut/gog/v2/vec"
 	"github.com/srwiley/rasterx"
@@ -156,10 +157,10 @@ func (ctx *Context) SaveAPNG(filePath string, delay int) {
 func (ctx *Context) DebugDraw(pth *path.Path) {
 
 	// Draw Bounding box
-	ctx.Stroke(BBox(pth.Bounds()), debugStyle)
+	ctx.Stroke(shapes.BBox(pth.Bounds()), debugStyle)
 
 	// Draw start point
-	circle := Circle(pth.Start(), 2)
+	circle := shapes.Circle(pth.Start(), 2)
 	ctx.Fill(circle, yellow)
 
 	// Draw end point

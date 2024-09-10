@@ -1,4 +1,4 @@
-package gog
+package shapes
 
 import (
 	"math"
@@ -11,25 +11,25 @@ import (
 // BBox returns a bounding box path with min and max points.
 func BBox(min, max vec.Vec2) *path.Path {
 	points := []vec.Vec2{min, {max.X, min.Y}, max, {min.X, max.Y}, min}
-	return path.NewPath(points).CalculateLength()
+	return path.NewPath(points)
 }
 
 // Line returns a line Path
 func Line(start, end vec.Vec2) *path.Path {
-	return path.NewPath([]vec.Vec2{start, end}).CalculateLength()
+	return path.NewPath([]vec.Vec2{start, end})
 }
 
 // CubicBezier returns a cubic-bezier Path.
 func CubicBezier(x0, y0, x1, y1, x2, y2, x3, y3 float64, samples int) *path.Path {
 	cb := cubicBezier{[4]vec.Vec2{{x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}}}
-	p := path.NewPath(cb.flatten(samples)).CalculateLength()
+	p := path.NewPath(cb.flatten(samples))
 	return p
 }
 
 // Rect returns a rectangle-shaped path.Path.
 func Rect(topLeft vec.Vec2, w, h float64) *path.Path {
 	Sq := path.NewPath([]vec.Vec2{{}, {w, 0}, {w, h}, {0, h}})
-	Sq.Close().Translate(topLeft.X, topLeft.Y).CalculateLength()
+	Sq.Close().Translate(topLeft.X, topLeft.Y)
 	return Sq
 }
 
@@ -108,5 +108,5 @@ func EllipseSamples(origin vec.Vec2, xRadius, yRadius float64, samples int) *pat
 		points = append(points, pt.Add(origin))
 	}
 
-	return path.NewPath(points).Close().CalculateLength()
+	return path.NewPath(points).Close()
 }

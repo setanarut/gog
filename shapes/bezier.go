@@ -1,4 +1,4 @@
-package gog
+package shapes
 
 import (
 	"github.com/setanarut/gog/v2/utils"
