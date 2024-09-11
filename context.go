@@ -58,9 +58,9 @@ func NewContext(width, height int) *Context {
 
 // Fill draws path with fillColor
 func (ctx *Context) Fill(p *path.Path, fillColor color.Color) {
-	ctx.filler.Start(vec.ToFixed(p.Start()))
+	ctx.filler.Start(utils.ToFixed(p.Start()))
 	for _, pt := range p.Points() {
-		ctx.filler.Line(vec.ToFixed(pt))
+		ctx.filler.Line(utils.ToFixed(pt))
 	}
 	ctx.filler.SetColor(fillColor)
 	ctx.filler.Stop(p.IsClosed())
@@ -104,9 +104,9 @@ func (ctx *Context) Stroke(p *path.Path, strokeStyle *StrokeStyle) {
 		rasterx.RoundGap,                        // gap
 		joinStyle)                               // join mode
 
-	ctx.stroker.Start(vec.ToFixed(p.Start()))
+	ctx.stroker.Start(utils.ToFixed(p.Start()))
 	for i := 1; i < len(p.Points()); i++ {
-		ctx.stroker.Line(vec.ToFixed(p.Points()[i]))
+		ctx.stroker.Line(utils.ToFixed(p.Points()[i]))
 	}
 
 	ctx.stroker.SetColor(strokeStyle.Color)

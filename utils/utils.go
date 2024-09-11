@@ -10,6 +10,7 @@ import (
 
 	"github.com/cia-rana/goapng"
 	"github.com/setanarut/vec"
+	"golang.org/x/image/math/fixed"
 )
 
 // TangentAngle return tangent angle of two points
@@ -104,4 +105,16 @@ func CloneRGBAImage(img *image.RGBA) image.Image {
 	clone := image.NewRGBA(img.Rect)
 	copy(clone.Pix, img.Pix)
 	return clone
+}
+
+func ToFixed(v vec.Vec2) fixed.Point26_6 {
+	return fixed.Point26_6{X: fixed.Int26_6(v.X * 64), Y: fixed.Int26_6(v.Y * 64)}
+}
+
+// RotateAbout rotates point about origin
+func RotateAbout(point vec.Vec2, angle float64, origin vec.Vec2) vec.Vec2 {
+	b := vec.Vec2{}
+	b.X = math.Cos(angle)*(point.X-origin.X) - math.Sin(angle)*(point.Y-origin.Y) + origin.X
+	b.Y = math.Sin(angle)*(point.X-origin.X) + math.Cos(angle)*(point.Y-origin.Y) + origin.Y
+	return b
 }

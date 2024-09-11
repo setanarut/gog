@@ -2,6 +2,8 @@ github.com/cia-rana/goapng v0.0.0-20190514125255-a6f0eaa24e77 h1:EJfccyd0ToYz8dJ
 github.com/cia-rana/goapng v0.0.0-20190514125255-a6f0eaa24e77/go.mod h1:p0pkqadiI/0Hh+lkWI1OFdpVJ6liL+Iv5HMquFXHNig=
 github.com/setanarut/vec v1.0.0 h1:ny/RHln24CS6gV3r9eacU6OFd7C3UUkJgVgoV+QV5Uw=
 github.com/setanarut/vec v1.0.0/go.mod h1:n5nlbE/xlpuBI3WfxXmq4TJWWkZzv2/bNqcEAO9X9ic=
+github.com/setanarut/vec v1.1.0 h1:Tmei65+2EsQzNB+0xkpNgcXGTZTT0gEUdZRjVb2CuuQ=
+github.com/setanarut/vec v1.1.0/go.mod h1:ZDoKd7F60rWLgCK58novWOCe5ePiXfSkwtmuOSSC9TU=
 github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef h1:Ch6Q+AZUxDBCVqdkI8FSpFyZDtCVBc2VmejdNrm5rRQ=
 github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef/go.mod h1:nXTWP6+gD5+LUJ8krVhhoeHjvHTutPxMYl5SvkcnJNE=
 github.com/srwiley/scanFT v0.0.0-20220128184157-0d1ee492111f h1:uLR2GaV0kWYZ3Ns3l3sjtiN+mOWAQadvrL8HXcyKjl0=

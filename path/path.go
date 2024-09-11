@@ -279,7 +279,7 @@ func (p *Path) Translate(x, y float64) *Path {
 // Rotate rotates the Path about Path.Anchor point
 func (p *Path) Rotate(angle float64) *Path {
 	for i := 0; i < p.Len(); i++ {
-		p.points[i] = vec.RotateAbout(p.points[i], angle, p.Anchor)
+		p.points[i] = utils.RotateAbout(p.points[i], angle, p.Anchor)
 	}
 	return p
 }
