@@ -83,19 +83,19 @@ func Spiral(n int, radius, angleStep float64) *path.Path {
 
 // Lemniscate generates the points for an infinity symbol (Lemniscate)
 //
-// n: Number of points
+// samples: Number of points
 //
-// w: Half width of the infinity symbol
-func Lemniscate(n int, w float64) *path.Path {
-	points := make([]vec.Vec2, n)
-	step := (2 * math.Pi) / float64(n) // Calculate the step size for the angle range from -pi to pi
-	for i := 0; i < n; i++ {
+// halfWidth: Half width of the infinity symbol
+func Lemniscate(samples int, halfWidth float64) *path.Path {
+	points := make([]vec.Vec2, samples)
+	step := (2 * math.Pi) / float64(samples) // Calculate the step size for the angle range from -pi to pi
+	for i := 0; i < samples; i++ {
 		t := -math.Pi + step*float64(i) // Adjust t to be between -pi and pi
-		x := w * math.Cos(t) / (1 + math.Pow(math.Sin(t), 2))
-		y := w * math.Cos(t) * math.Sin(t) / (1 + math.Pow(math.Sin(t), 2))
+		x := halfWidth * math.Cos(t) / (1 + math.Pow(math.Sin(t), 2))
+		y := halfWidth * math.Cos(t) * math.Sin(t) / (1 + math.Pow(math.Sin(t), 2))
 		points[i] = vec.Vec2{x, y}
 	}
-	return path.NewPath(points)
+	return path.NewPath(points).Close()
 }
 
 // EllipseSamples returns an ellipse-shaped path.Path.

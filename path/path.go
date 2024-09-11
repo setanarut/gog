@@ -22,12 +22,8 @@ func NewPath(points []vec.Vec2) *Path {
 	newPath := &Path{
 		points: points,
 	}
-
 	if len(points) > 1 {
-		// if newPath.IsClosed() == false {
-		// 	newPath.Close()
-		// }
-		newPath.SetAnchor(newPath.Centroid())
+		newPath.SetAnchorToCentroid()
 	}
 	return newPath
 }
@@ -163,11 +159,15 @@ func (p *Path) Perpendicular(length float64, lineLength float64) (start vec.Vec2
 func (p *Path) Centroid() vec.Vec2 {
 	total := float64(len(p.points))
 	centroidPoint := vec.Vec2{0, 0}
-	noDoublePath := clonePath(p).RemoveDoubles()
-	for _, pt := range noDoublePath.points {
+	clonePath := clonePath(p)
+	if clonePath.IsClosed() {
+		clonePath.Open()
+	}
+	clonePath.RemoveDoubles()
+	for _, pt := range clonePath.points {
 		centroidPoint = centroidPoint.Add(pt)
 	}
-	noDoublePath = nil
+	clonePath = nil
 	return centroidPoint.Div(total)
 }
 
@@ -175,6 +175,11 @@ func (p *Path) Centroid() vec.Vec2 {
 func (p *Path) SetAnchor(pt vec.Vec2) *Path {
 	p.Anchor = pt
 	return p
+}
+
+// SetAnchorToCentroid Sets Path's anchor point to centroid
+func (p *Path) SetAnchorToCentroid() *Path {
+	return p.SetAnchor(p.Centroid())
 }
 
 // PointAngleAtLength Returns point and tangent angle at length
@@ -195,7 +200,7 @@ func (p *Path) PointAngleAtLength(length float64) (vec.Vec2, float64) {
 
 // IsClosed returns true if Path closed
 func (p *Path) IsClosed() bool {
-	if p.Start().Distance(p.End()) < 0.01 {
+	if p.Start().Distance(p.End()) < 0.1 {
 		return true
 	} else {
 		return false

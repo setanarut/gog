@@ -23,11 +23,11 @@ var debugPathStrokeStyle = &StrokeStyle{
 	LineWidth: 1,
 }
 var debugCentroidStrokeStyle = &StrokeStyle{
-	Color:     color.RGBA{0, 255, 255, 255},
+	Color:     color.RGBA{0, 255, 255, 255}, // cyan
 	LineWidth: 2,
 }
 var debugBBoxCenterStrokeStyle = &StrokeStyle{
-	Color:     color.RGBA{255, 128, 0, 255},
+	Color:     color.RGBA{255, 128, 0, 255}, // orange
 	LineWidth: 2,
 }
 
@@ -178,7 +178,7 @@ func (ctx *Context) DebugDraw(pth *path.Path) {
 	ctx.Stroke(pth, debugPathStrokeStyle)
 
 	// Draw Centroid
-	circle.SetPos(pth.Centroid()).Scale(vec.Vec2{2, 2})
+	circle.SetPos(pth.Anchor).Scale(vec.Vec2{1.3, 1.3})
 	ctx.Stroke(circle, debugCentroidStrokeStyle)
 
 	// Draw BBox center
