@@ -6,12 +6,12 @@ import (
 	"github.com/setanarut/gog/v2"
 	"github.com/setanarut/gog/v2/shapes"
 	"github.com/setanarut/gog/v2/utils"
-	"github.com/setanarut/vec"
+	"github.com/setanarut/v"
 )
 
 func main() {
 	ctx := gog.NewContext(250, 100)
-	rect := shapes.Rect(vec.Vec2{}, 30, 10)
+	rect := shapes.Rect(v.Vec{}, 30, 10)
 	lemn := shapes.Lemniscate(100, 100).SetPos(ctx.Center)
 	lemnTotalLength := lemn.Length()
 	for _, length := range utils.Linspace(0, lemnTotalLength, 120) {

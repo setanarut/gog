@@ -9,7 +9,7 @@ import (
 	"github.com/setanarut/gog/v2/path"
 	"github.com/setanarut/gog/v2/shapes"
 	"github.com/setanarut/gog/v2/utils"
-	"github.com/setanarut/vec"
+	"github.com/setanarut/v"
 	"github.com/srwiley/rasterx"
 	"github.com/srwiley/scanFT"
 	"golang.org/x/image/math/fixed"
@@ -34,7 +34,7 @@ var debugBBoxCenterStrokeStyle = &StrokeStyle{
 type Context struct {
 	AnimationFrames []image.Image
 	// Center point of Canvas
-	Center vec.Vec2
+	Center v.Vec
 
 	surface         *image.RGBA
 	painter         *scanFT.RGBAPainter
@@ -51,7 +51,7 @@ func NewContext(width, height int) *Context {
 	ctx.scannerFreeType = scanFT.NewScannerFT(width, height, ctx.painter)
 	ctx.stroker = rasterx.NewStroker(width, height, ctx.scannerFreeType)
 	ctx.filler = &ctx.stroker.Filler
-	ctx.Center = vec.Vec2{float64(width) / 2, float64(height) / 2}
+	ctx.Center = v.Vec{float64(width) / 2, float64(height) / 2}
 	ctx.Clear(color.Black)
 	return ctx
 }
@@ -178,7 +178,7 @@ func (ctx *Context) DebugDraw(pth *path.Path) {
 	ctx.Stroke(pth, debugPathStrokeStyle)
 
 	// Draw Centroid
-	circle.SetPos(pth.Anchor).Scale(vec.Vec2{1.3, 1.3})
+	circle.SetPos(pth.Anchor).Scale(v.Vec{1.3, 1.3})
 	ctx.Stroke(circle, debugCentroidStrokeStyle)
 
 	// Draw BBox center

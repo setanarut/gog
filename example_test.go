@@ -8,7 +8,7 @@ import (
 	"github.com/setanarut/gog/v2"
 	"github.com/setanarut/gog/v2/path"
 	"github.com/setanarut/gog/v2/shapes"
-	"github.com/setanarut/vec"
+	"github.com/setanarut/v"
 )
 
 // 150-frame rotating cubic bezier APNG animation
@@ -30,7 +30,7 @@ func Example() {
 
 // Creates new line and prints start and end point
 func ExampleLine() {
-	line := shapes.Line(vec.Vec2{X: 0, Y: 0}, vec.Vec2{X: 25, Y: 80})
+	line := shapes.Line(v.Vec{X: 0, Y: 0}, v.Vec{X: 25, Y: 80})
 	fmt.Println(line.Start(), line.End())
 	// Output:
 	// Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 25.000000, Y: 80.000000}
@@ -38,7 +38,7 @@ func ExampleLine() {
 
 // Get point and tangent angle at length
 func ExamplePath_PointAngleAtLength() {
-	line := path.NewPath([]vec.Vec2{{X: 0, Y: 0}, {X: 10, Y: 10}})
+	line := path.NewPath([]v.Vec{{X: 0, Y: 0}, {X: 10, Y: 10}})
 	point, angle := line.PointAngleAtLength(line.Length() / 2)
 	fmt.Println(point, angle)
 	// Output:
@@ -46,7 +46,7 @@ func ExamplePath_PointAngleAtLength() {
 }
 
 func ExamplePath_InsertAtLength() {
-	line := path.NewPath([]vec.Vec2{{0, 0}, {0, 10}, {0, 20}})
+	line := path.NewPath([]v.Vec{{0, 0}, {0, 10}, {0, 20}})
 	line.InsertAtLength(10.5)
 	line.PrintPoints()
 	// Output:
@@ -55,17 +55,17 @@ func ExamplePath_InsertAtLength() {
 
 // Insert point to path points at index
 func ExamplePath_InsertAtIndex() {
-	line := path.NewPath([]vec.Vec2{{0, 0}, {10, 10}})
-	line.InsertAtIndex(vec.Vec2{66, 66}, 1)
+	line := path.NewPath([]v.Vec{{0, 0}, {10, 10}})
+	line.InsertAtIndex(v.Vec{66, 66}, 1)
 	line.PrintPoints()
 	// Output:
 	// [Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 66.000000, Y: 66.000000} Vec2{X: 10.000000, Y: 10.000000}]
 }
 
 func ExamplePath_SetAnchor() {
-	line := path.NewPath([]vec.Vec2{{X: 0, Y: 0}, {X: 10, Y: 10}})
+	line := path.NewPath([]v.Vec{{X: 0, Y: 0}, {X: 10, Y: 10}})
 	fmt.Println(line.Anchor) // Centroid of Path
-	line.SetAnchor(vec.Vec2{X: 3, Y: 3})
+	line.SetAnchor(v.Vec{X: 3, Y: 3})
 	fmt.Println(line.Anchor)
 	line.ResetAnchor()
 	fmt.Println(line.Anchor)
@@ -78,7 +78,7 @@ func ExamplePath_SetAnchor() {
 }
 
 func ExamplePath_RemoveDoubles() {
-	path := path.NewPath([]vec.Vec2{{0, 0}, {77, 77}, {77, 77}, {0, 0}, {0, 0}})
+	path := path.NewPath([]v.Vec{{0, 0}, {77, 77}, {77, 77}, {0, 0}, {0, 0}})
 	path.RemoveDoubles()
 	fmt.Println(path.Points())
 	// Output:
