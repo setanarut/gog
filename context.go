@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/draw"
 
+	"github.com/setanarut/apng"
 	"github.com/setanarut/gog/v2/path"
 	"github.com/setanarut/gog/v2/shapes"
 	"github.com/setanarut/gog/v2/utils"
@@ -150,7 +151,7 @@ func (ctx *Context) SaveAPNG(filePath string, delay int) {
 	if len(ctx.AnimationFrames) == 0 {
 		panic("There is no frame in the image sequence, add at least one frame with AppendAnimationFrame().")
 	}
-	utils.WriteAnimatedPNG(filePath, ctx.AnimationFrames, uint16(delay))
+	apng.Save(filePath, ctx.AnimationFrames, uint16(delay))
 }
 
 // DebugDraw draws Path attributes for debug

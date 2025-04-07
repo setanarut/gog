@@ -8,7 +8,6 @@ import (
 	"math"
 	"os"
 
-	"github.com/cia-rana/goapng"
 	"github.com/setanarut/v"
 	"golang.org/x/image/math/fixed"
 )
@@ -82,23 +81,6 @@ func WritePNG(filePath string, img image.Image) {
 		os.Exit(1)
 	}
 
-}
-
-func WriteAnimatedPNG(filePath string, images []image.Image, delay uint16) {
-	totalFrames := len(images)
-	delays := make([]uint16, totalFrames)
-	for i := range delays {
-		delays[i] = delay
-	}
-	animPng := goapng.APNG{}
-	animPng.Images = images
-	animPng.Delays = delays
-	file, err := os.Create(filePath)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	goapng.EncodeAll(file, &animPng)
 }
 
 func CloneRGBAImage(img *image.RGBA) image.Image {
