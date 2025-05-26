@@ -16,7 +16,7 @@ func Example() {
 	ctx := gog.NewContext(250, 250)
 	curve := shapes.CubicBezier(100, 95, 50, 300, 190, 88, 140, 200, 50)
 	curve.SetPos(ctx.Center)
-	for i := 0; i < 150; i++ {
+	for range 150 {
 		ctx.Clear(color.Gray{30})
 		curve.Rotate((math.Pi * 2) / 150)
 		ctx.DebugDraw(curve)
@@ -33,7 +33,7 @@ func ExampleLine() {
 	line := shapes.Line(v.Vec{X: 0, Y: 0}, v.Vec{X: 25, Y: 80})
 	fmt.Println(line.Start(), line.End())
 	// Output:
-	// Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 25.000000, Y: 80.000000}
+	// (0.0, 0.0) (25.0, 80.0)
 }
 
 // Get point and tangent angle at length
@@ -42,7 +42,7 @@ func ExamplePath_PointAngleAtLength() {
 	point, angle := line.PointAngleAtLength(line.Length() / 2)
 	fmt.Println(point, angle)
 	// Output:
-	// Vec2{X: 5.000000, Y: 5.000000} 0.7853981633974483
+	// (5.0, 5.0) 0.7853981633974483
 }
 
 func ExamplePath_InsertAtLength() {
@@ -50,7 +50,7 @@ func ExamplePath_InsertAtLength() {
 	line.InsertAtLength(10.5)
 	line.PrintPoints()
 	// Output:
-	// [Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 0.000000, Y: 10.000000} Vec2{X: 0.000000, Y: 10.500000} Vec2{X: 0.000000, Y: 20.000000}]
+	// [(0.0, 0.0) (0.0, 10.0) (0.0, 10.5) (0.0, 20.0)]
 }
 
 // Insert point to path points at index
@@ -59,7 +59,7 @@ func ExamplePath_InsertAtIndex() {
 	line.InsertAtIndex(v.Vec{66, 66}, 1)
 	line.PrintPoints()
 	// Output:
-	// [Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 66.000000, Y: 66.000000} Vec2{X: 10.000000, Y: 10.000000}]
+	// [(0.0, 0.0) (66.0, 66.0) (10.0, 10.0)]
 }
 
 func ExamplePath_SetAnchor() {
@@ -71,16 +71,16 @@ func ExamplePath_SetAnchor() {
 	fmt.Println(line.Anchor)
 	fmt.Println(line.Centroid() == line.Anchor)
 	// Output:
-	// Vec2{X: 5.000000, Y: 5.000000}
-	// Vec2{X: 3.000000, Y: 3.000000}
-	// Vec2{X: 5.000000, Y: 5.000000}
+	// (5.0, 5.0)
+	// (3.0, 3.0)
+	// (5.0, 5.0)
 	// true
 }
 
 func ExamplePath_RemoveDoubles() {
 	path := path.NewPath([]v.Vec{{0, 0}, {77, 77}, {77, 77}, {0, 0}, {0, 0}})
 	path.RemoveDoubles()
-	fmt.Println(path.Points())
+	fmt.Println(path.Points)
 	// Output:
-	// [Vec2{X: 0.000000, Y: 0.000000} Vec2{X: 77.000000, Y: 77.000000} Vec2{X: 0.000000, Y: 0.000000}]
+	// [(0.0, 0.0) (77.0, 77.0) (0.0, 0.0)]
 }

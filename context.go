@@ -57,10 +57,10 @@ func NewContext(width, height int) *Context {
 	return ctx
 }
 
-// Fill draws path with fillColor
+// Fill draws path with fillColoræ
 func (ctx *Context) Fill(p *path.Path, fillColor color.Color) {
 	ctx.filler.Start(utils.ToFixed(p.Start()))
-	for _, pt := range p.Points() {
+	for _, pt := range p.Points {
 		ctx.filler.Line(utils.ToFixed(pt))
 	}
 	ctx.filler.SetColor(fillColor)
@@ -106,8 +106,8 @@ func (ctx *Context) Stroke(p *path.Path, strokeStyle *StrokeStyle) {
 		joinStyle)                               // join mode
 
 	ctx.stroker.Start(utils.ToFixed(p.Start()))
-	for i := 1; i < len(p.Points()); i++ {
-		ctx.stroker.Line(utils.ToFixed(p.Points()[i]))
+	for i := 1; i < len(p.Points); i++ {
+		ctx.stroker.Line(utils.ToFixed(p.Points[i]))
 	}
 
 	ctx.stroker.SetColor(strokeStyle.Color)
@@ -168,11 +168,11 @@ func (ctx *Context) DebugDraw(pth *path.Path) {
 	ctx.Fill(circle.SetPos(pth.End()), yellow)
 
 	// Draw second point
-	ctx.Fill(circle.SetPos(pth.Points()[1]), orangered)
+	ctx.Fill(circle.SetPos(pth.Points[1]), orangered)
 
 	// Draw all points
 	for i := 2; i < pth.Len()-1; i++ {
-		circle.SetPos(pth.Points()[i])
+		circle.SetPos(pth.Points[i])
 		ctx.Fill(circle, color.White)
 	}
 	// Draw path stroke

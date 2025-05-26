@@ -68,7 +68,7 @@ func RegularPolygon(origin v.Vec, n int, radius float64) *path.Path {
 func Spiral(n int, radius, angleStep float64) *path.Path {
 	points := make([]v.Vec, n)
 
-	for i := 0; i < n; i++ {
+	for i := range n {
 		angle := angleStep * float64(i)         // Açıyı her adımda arttırıyoruz
 		r := radius * (float64(i) / float64(n)) // Yarıçap her adımda artıyor
 
@@ -89,7 +89,7 @@ func Spiral(n int, radius, angleStep float64) *path.Path {
 func Lemniscate(samples int, halfWidth float64) *path.Path {
 	points := make([]v.Vec, samples)
 	step := (2 * math.Pi) / float64(samples) // Calculate the step size for the angle range from -pi to pi
-	for i := 0; i < samples; i++ {
+	for i := range samples {
 		t := -math.Pi + step*float64(i) // Adjust t to be between -pi and pi
 		x := halfWidth * math.Cos(t) / (1 + math.Pow(math.Sin(t), 2))
 		y := halfWidth * math.Cos(t) * math.Sin(t) / (1 + math.Pow(math.Sin(t), 2))
@@ -102,7 +102,7 @@ func Lemniscate(samples int, halfWidth float64) *path.Path {
 func EllipseSamples(origin v.Vec, xRadius, yRadius float64, samples int) *path.Path {
 	points := make([]v.Vec, 0)
 	angleStep := 2 * math.Pi / float64(samples)
-	for i := 0; i < samples; i++ {
+	for i := range samples {
 		angle := float64(i) * angleStep
 		pt := v.Vec{xRadius * math.Cos(angle), yRadius * math.Sin(angle)}
 		points = append(points, pt.Add(origin))

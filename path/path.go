@@ -13,14 +13,14 @@ import (
 type Path struct {
 	// Anchor point
 	Anchor v.Vec
-	// points holds coordinates of Path
-	points []v.Vec
+	// Points holds coordinates of Path
+	Points []v.Vec
 }
 
 // NewPath returns new Path from points
 func NewPath(points []v.Vec) *Path {
 	newPath := &Path{
-		points: points,
+		Points: points,
 	}
 	if len(points) > 1 {
 		newPath.SetAnchorToCentroid()
@@ -33,7 +33,7 @@ func NewPath(points []v.Vec) *Path {
 // This is an operation that changes the path length.
 // If the length is necessary, length should be taken with Length().
 func (p *Path) AppendPoints(points ...v.Vec) *Path {
-	p.points = append(p.points, points...)
+	p.Points = append(p.Points, points...)
 	return p
 }
 
@@ -42,8 +42,8 @@ func (p *Path) AppendPoints(points ...v.Vec) *Path {
 // This is an operation that changes the path length.
 // If the length is necessary,length should be taken with Length().
 func (p *Path) DeleteEnd() *Path {
-	if len(p.points) > 2 {
-		p.points = p.points[:len(p.points)-1]
+	if len(p.Points) > 2 {
+		p.Points = p.Points[:len(p.Points)-1]
 	}
 	return p
 }
@@ -53,8 +53,8 @@ func (p *Path) DeleteEnd() *Path {
 // This is an operation that changes the path length.
 // If the length is necessary, length should be taken with Length().
 func (p *Path) DeleteAtIndex(index int) *Path {
-	if len(p.points) > 2 {
-		p.points = slices.Delete(p.points, index, index+1)
+	if len(p.Points) > 2 {
+		p.Points = slices.Delete(p.Points, index, index+1)
 	}
 	return p
 }
@@ -64,13 +64,13 @@ func (p *Path) DeleteAtIndex(index int) *Path {
 // This is an operation that changes the path length.
 // If the length is necessary, length should be taken with Length().
 func (p *Path) InsertAtIndex(pnt v.Vec, index int) *Path {
-	p.points = slices.Insert(p.points, index, pnt)
+	p.Points = slices.Insert(p.Points, index, pnt)
 	return p
 }
 
 // PointAtIndex returns point at index
 func (p *Path) PointAtIndex(index int) v.Vec {
-	pt := p.points[index]
+	pt := p.Points[index]
 	return pt
 }
 
@@ -80,8 +80,8 @@ func (p *Path) PointAtIndex(index int) v.Vec {
 // If the length is necessary, length should be taken with Length().
 func (p *Path) InsertAtLength(length float64) {
 	traveledDist := 0.0
-	for i := 0; i < len(p.points)-1; i++ {
-		start, end := p.points[i], p.points[i+1]
+	for i := range len(p.Points) - 1 {
+		start, end := p.Points[i], p.Points[i+1]
 		segmentLength := start.Dist(end)
 		if traveledDist+segmentLength >= length {
 			fracSeg := (length - traveledDist) / segmentLength
@@ -101,13 +101,13 @@ func (p *Path) RemoveDoubles() *Path {
 	seen := make(map[v.Vec]bool)
 	closed := p.IsClosed()
 	p.Open()
-	for _, p := range p.points {
+	for _, p := range p.Points {
 		if !seen[p] {
 			seen[p] = true
 			uniquePoints = append(uniquePoints, p)
 		}
 	}
-	p.points = uniquePoints
+	p.Points = uniquePoints
 	if closed {
 		p.Close()
 	}
@@ -116,7 +116,7 @@ func (p *Path) RemoveDoubles() *Path {
 
 // Len returns number of points
 func (p Path) Len() int {
-	return len(p.points)
+	return len(p.Points)
 }
 
 // ResetAnchor sets anchor point to centroid
@@ -128,7 +128,7 @@ func (p *Path) ResetAnchor() *Path {
 // Open opens Path
 func (p *Path) Open() *Path {
 	if p.IsClosed() {
-		p.points = p.points[:len(p.points)-1]
+		p.Points = p.Points[:len(p.Points)-1]
 		return p
 	}
 	return p
@@ -140,7 +140,7 @@ func (p *Path) Open() *Path {
 // If the length is necessary, length should be taken with Length().
 func (p *Path) Close() *Path {
 	if !p.IsClosed() {
-		p.points = append(p.points, p.points[0])
+		p.Points = append(p.Points, p.Points[0])
 	}
 	return p
 }
@@ -157,14 +157,14 @@ func (p *Path) Perpendicular(length float64, lineLength float64) (start v.Vec, e
 // Centroid calculates and returns the path's centroid point.
 // Costly operation. Don't use unless necessary.
 func (p *Path) Centroid() v.Vec {
-	total := float64(len(p.points))
+	total := float64(len(p.Points))
 	centroidPoint := v.Vec{0, 0}
-	clonePath := clonePath(p)
+	clonePath := p.Clone()
 	if clonePath.IsClosed() {
 		clonePath.Open()
 	}
 	clonePath.RemoveDoubles()
-	for _, pt := range clonePath.points {
+	for _, pt := range clonePath.Points {
 		centroidPoint = centroidPoint.Add(pt)
 	}
 	clonePath = nil
@@ -185,8 +185,8 @@ func (p *Path) SetAnchorToCentroid() *Path {
 // PointAngleAtLength Returns point and tangent angle at length
 func (p *Path) PointAngleAtLength(length float64) (v.Vec, float64) {
 	traveledDist := 0.0
-	for i := 0; i < len(p.points)-1; i++ {
-		start, end := p.points[i], p.points[i+1]
+	for i := range len(p.Points) - 1 {
+		start, end := p.Points[i], p.Points[i+1]
 		segmentLength := start.Dist(end)
 		if traveledDist+segmentLength >= length {
 			fracSeg := (length - traveledDist) / segmentLength
@@ -209,17 +209,12 @@ func (p *Path) IsClosed() bool {
 
 // PrintPoints prints path points to standard output.
 func (p *Path) PrintPoints() {
-	fmt.Println(p.points)
-}
-
-// Points return points
-func (p *Path) Points() []v.Vec {
-	return p.points
+	fmt.Println(p.Points)
 }
 
 // SetPoints sets points
 func (p *Path) SetPoints(pts []v.Vec) {
-	p.points = pts
+	p.Points = pts
 }
 
 // Bounds returns bounds min/max
@@ -227,17 +222,17 @@ func (p *Path) Bounds() (v.Vec, v.Vec) {
 	min := p.Start()
 	max := p.Start()
 	for i := 0; i < p.Len(); i++ {
-		if p.points[i].X < min.X {
-			min.X = p.points[i].X
+		if p.Points[i].X < min.X {
+			min.X = p.Points[i].X
 		}
-		if p.points[i].Y < min.Y {
-			min.Y = p.points[i].Y
+		if p.Points[i].Y < min.Y {
+			min.Y = p.Points[i].Y
 		}
-		if p.points[i].X > max.X {
-			max.X = p.points[i].X
+		if p.Points[i].X > max.X {
+			max.X = p.Points[i].X
 		}
-		if p.points[i].Y > max.Y {
-			max.Y = p.points[i].Y
+		if p.Points[i].Y > max.Y {
+			max.Y = p.Points[i].Y
 		}
 	}
 	return min, max
@@ -245,16 +240,16 @@ func (p *Path) Bounds() (v.Vec, v.Vec) {
 
 // Start returns start point of Path
 func (p *Path) Start() v.Vec {
-	if len(p.points) > 0 {
-		return p.points[0]
+	if len(p.Points) > 0 {
+		return p.Points[0]
 	}
 	return v.Vec{0, 0}
 }
 
 // End returns end point of Path
 func (p *Path) End() v.Vec {
-	if len(p.points) > 0 {
-		return p.points[len(p.points)-1]
+	if len(p.Points) > 0 {
+		return p.Points[len(p.Points)-1]
 	}
 	return v.Vec{0, 0}
 }
@@ -269,8 +264,8 @@ func (p *Path) SetPos(position v.Vec) *Path {
 // Translate translates the Path
 func (p *Path) Translate(x, y float64) *Path {
 	q := v.Vec{x, y}
-	for i := 0; i < len(p.points); i++ {
-		p.points[i] = p.points[i].Add(q)
+	for i := 0; i < len(p.Points); i++ {
+		p.Points[i] = p.Points[i].Add(q)
 	}
 	p.Anchor = p.Anchor.Add(q)
 	return p
@@ -279,21 +274,21 @@ func (p *Path) Translate(x, y float64) *Path {
 // Rotate rotates the Path about Path.Anchor point
 func (p *Path) Rotate(angle float64) *Path {
 	for i := 0; i < p.Len(); i++ {
-		p.points[i] = utils.RotateAbout(p.points[i], angle, p.Anchor)
+		p.Points[i] = utils.RotateAbout(p.Points[i], angle, p.Anchor)
 	}
 	return p
 }
 
 // Rotated returns new rotated Path about Path.Anchor point
 func (p *Path) Rotated(angle float64) *Path {
-	return clonePath(p).Rotate(angle)
+	return p.Clone().Rotate(angle)
 }
 
 // Scale scales the Path at the Anchor point.
 // CalculateLength() after scaling for
 func (p *Path) Scale(factor v.Vec) *Path {
-	for i := 0; i < len(p.points); i++ {
-		p.points[i] = factor.Mul(p.points[i].Sub(p.Anchor)).Add(p.Anchor)
+	for i := 0; i < len(p.Points); i++ {
+		p.Points[i] = factor.Mul(p.Points[i].Sub(p.Anchor)).Add(p.Anchor)
 	}
 	return p
 }
@@ -302,8 +297,8 @@ func (p *Path) Scale(factor v.Vec) *Path {
 // Costly operation. Don't use unless necessary.
 func (p *Path) Length() float64 {
 	length := 0.0
-	for i := 0; i < len(p.points)-1; i++ {
-		length += p.points[i].Dist(p.points[i+1])
+	for i := 0; i < len(p.Points)-1; i++ {
+		length += p.Points[i].Dist(p.Points[i+1])
 	}
 	return length
 }
@@ -311,15 +306,15 @@ func (p *Path) Length() float64 {
 // Reverse reverses Path.
 // The starting point becomes the end and the end becomes the beginning.
 func (p *Path) Reverse() *Path {
-	slices.Reverse(p.points)
+	slices.Reverse(p.Points)
 	return p
 }
 
 // DeepCopyPath returns copy of path
-func clonePath(p *Path) *Path {
+func (p *Path) Clone() *Path {
 	newPath := new(Path)
-	newCoords := make([]v.Vec, len(p.Points()))
-	copy(newCoords, p.Points())
+	newCoords := make([]v.Vec, len(p.Points))
+	copy(newCoords, p.Points)
 	newPath.SetPoints(newCoords)
 	newPath.Anchor = p.Anchor
 	return newPath

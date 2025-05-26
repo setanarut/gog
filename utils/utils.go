@@ -44,21 +44,17 @@ func Radians(degree float64) float64 {
 }
 
 // Linspace returns evenly spaced numbers over a specified closed interval.
-func Linspace(start, stop float64, num int) (res []float64) {
-	if num <= 0 {
-		return []float64{}
+func Linspace(min, max float64, n int) []float64 {
+	if n == 1 {
+		return []float64{min}
 	}
-	if num == 1 {
-		return []float64{start}
+	d := max - min
+	l := float64(n) - 1
+	res := make([]float64, n)
+	for i := range res {
+		res[i] = (min + (float64(i)*d)/l)
 	}
-	step := (stop - start) / float64(num-1)
-	res = make([]float64, num)
-	res[0] = start
-	for i := 1; i < num; i++ {
-		res[i] = start + float64(i)*step
-	}
-	res[num-1] = stop
-	return
+	return res
 }
 
 // WritePNG writes PNG mage to disk.
